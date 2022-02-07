@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "incremental": true, /* Enable incremental compilation */
+    "target": "ESNext", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "ESNext", /* Specify what module code is generated. */
+    "skipDefaultLibCheck": true, /* Skip type checking .d.ts files that are included with TypeScript. */
+    "skipLibCheck": true, /* Skip type checking all .d.ts files. */
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "outDir": "./app/js",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "types": [
+      "./typings",
+      "node",
+      "pako"
+    ],
+    "lib": [
+      "ES2017",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "declaration": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false,
+    "useDefineForClassFields": true,
+    "sourceMap": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "noUnusedLocals": true,
+    "watch": true,
+    "tsBuildInfoFile":"./src/build"
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "typings/**/*.d.ts",
+  ]
+}
