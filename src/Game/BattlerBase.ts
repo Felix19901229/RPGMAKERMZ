@@ -226,10 +226,10 @@ export class Game_BattlerBase {
     public get exr() {
         return this.sparam(9);
     }
-    constructor() {
-        this.initialize();
+    constructor(...args:[number,number?,number?]) {
+        this.initialize(...args)
     }
-    public initialize() {
+    public initialize(...args) {
         this.initMembers();
     };
     public initMembers() {

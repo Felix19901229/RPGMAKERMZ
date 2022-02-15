@@ -13,3 +13,6 @@ export { Game_ActionResult } from "./ActionResult.js";
 export { Game_BattlerBase } from "./BattlerBase.js";
 export { Game_Battler } from "./Battler.js";
 export { Game_Actor } from "./Actor.js";
+export { Game_Enemy } from "./Enemy.js";
+export { Game_Actors } from "./Actors.js";
+export { Game_Unit } from "./Unit.js";

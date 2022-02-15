@@ -25,12 +25,12 @@ export class Game_Battler extends Game_BattlerBase {
     _tpbIdleTime: number;
     _tpbTurnCount: number;
     _tpbTurnEnd: boolean;
-    constructor() {
-        super();
-        this.initialize();
+    constructor(...args:[number,number?,number?]) {
+        super(...args)
+        this.initialize(...args);
     }
     public initialize(...args) {
-        Game_BattlerBase.prototype.initialize.call(this);
+        super.initialize();
     };
     public initMembers() {
         Game_BattlerBase.prototype.initMembers.call(this);
