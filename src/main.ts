@@ -2,14 +2,13 @@
 // main.js v1.0.0
 //=============================================================================
 declare const $plugins: any;
-declare const effekseer: any;
 declare const SceneManager: any;
 declare const Scene_Boot: any;
-import './Core/JsExtensions.js';
+declare const PluginManager: any;
+declare const Utils: any;
+import "./Core/JsExtensions.js";
 import * as Core from "./Core/index.js";
-import * as Manager from './Manager/index.js';
 import * as Game from "./Game/index.js";
-
 // import * as Windows from "./Windows/index.js";
 // import * as Sprite from "./Sprite/index.js";
 // import * as Scenes from "./Scenes/index.js";
@@ -50,6 +49,7 @@ const scriptUrls = [
     "js/libs/localforage.min.js",
     "js/libs/effekseer.min.js",
     "js/libs/vorbisdecoder.js",
+    "js/rmmz_managers.js",
     "js/rmmz_objects.js",
     "js/rmmz_scenes.js",
     "js/rmmz_sprites.js",
@@ -70,15 +70,8 @@ class Main {
     }
 
     run() {
-        Object.assign(window, Core);
-        Object.assign(window, Manager);
-        Object.assign(window, Game);
-        // Object.assign(window, Windows);
-        // Object.assign(window, Sprite);
-        // Object.assign(window, Scenes);
-        // window.PluginManager = PluginManager;
-        // window.DataManager = DataManager;
-
+        Object.assign(window,Core);
+        Object.assign(window,Game);
         this.showLoadingSpinner();
         this.testXhr();
         this.loadMainScripts();
@@ -126,7 +119,7 @@ class Main {
 
     onScriptLoad() {
         if (++this.loadCount === this.numScripts) {
-            Manager.PluginManager.setup($plugins);
+            PluginManager.setup($plugins);
         }
     }
 
@@ -178,7 +171,7 @@ class Main {
         // [Note] We cannot save the game properly when Gatekeeper Path
         //   Randomization is in effect.
         return (
-            Core.Utils.isNwjs() &&
+            Utils.isNwjs() &&
             process.mainModule?.filename.startsWith("/private/var")
         );
     }

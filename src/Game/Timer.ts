@@ -1,4 +1,4 @@
-import { BattleManager } from "../Manager/index.js";
+declare const BattleManager:any;
 //-----------------------------------------------------------------------------
 /**
  * Game_Timer
@@ -8,42 +8,42 @@ import { BattleManager } from "../Manager/index.js";
 export class Game_Timer {
     _frames: number;
     _working: boolean;
-    constructor() {
-        this.initialize();
+    constructor(...args: any[]) {
+        this.initialize(...args);
     }
 
-    public initialize() {
+    public initialize(...args) {
         this._frames = 0;
         this._working = false;
-    };
+    }
 
-    public update(sceneActive: boolean) {
+    public update(sceneActive) {
         if (sceneActive && this._working && this._frames > 0) {
             this._frames--;
             if (this._frames === 0) {
                 this.onExpire();
             }
         }
-    };
+    }
 
-    public start(count: number) {
+    public start(count) {
         this._frames = count;
         this._working = true;
-    };
+    }
 
     public stop() {
         this._working = false;
-    };
+    }
 
     public isWorking() {
         return this._working;
-    };
+    }
 
     public seconds() {
         return Math.floor(this._frames / 60);
-    };
+    }
 
     public onExpire() {
         BattleManager.abort();
-    };
+    }
 }

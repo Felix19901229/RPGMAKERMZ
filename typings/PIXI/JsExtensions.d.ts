@@ -17,7 +17,7 @@ interface Array<T> {
      * @memberof JsExtensions
      * @returns {array} A shallow copy of the array.
      */
-    clone: () => Array<T>;
+    clone: () => this;
     /**
      * Checks whether the array contains a given element.
      *

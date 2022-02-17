@@ -1,3 +1,3 @@
-// interface Element {
-//     ALLOW_KEYBOARD_INPUT: boolean;
-// }
+export interface Element {
+    ALLOW_KEYBOARD_INPUT:boolean;
+};

@@ -10,11 +10,11 @@
  * @param {number} height - The height of the rectangle.
  */
 export class Rectangle extends PIXI.Rectangle {
-    constructor(x?: number, y?: number, width?: number, height?: number) {
-        super(x, y, width, height);
-        this.initialize(x, y, width, height);
+    constructor(...args: [number?, number?, number?, number?]) {
+        super(...args);
+        this.initialize(...args);
     }
-    public initialize(x?: number, y?: number, width?: number, height?: number) {
+    public initialize(x: number, y: number, width: number, height: number) {
         PIXI.Rectangle.call(this, x, y, width, height);
-    };
+    }
 }

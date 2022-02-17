@@ -6,60 +6,59 @@
  * @extends PIXI.Filter
  */
 export class ColorFilter extends PIXI.Filter {
-    constructor() {
+    constructor(...args: any[]) {
         super();
-        this.initialize();
+        this.initialize(...args);
     }
-
-    public initialize() {
+    public initialize(...args) {
         PIXI.Filter.call(this, null, this._fragmentSrc());
         this.uniforms.hue = 0;
         this.uniforms.colorTone = [0, 0, 0, 0];
         this.uniforms.blendColor = [0, 0, 0, 0];
         this.uniforms.brightness = 255;
-    };
+    }
 
     /**
      * Sets the hue rotation value.
      *
      * @param {number} hue - The hue value (-360, 360).
      */
-    public setHue(hue: string | number) {
+    public setHue(hue) {
         this.uniforms.hue = Number(hue);
-    };
+    }
 
     /**
      * Sets the color tone.
      *
      * @param {array} tone - The color tone [r, g, b, gray].
      */
-    public setColorTone(tone: [number,number,number,number]) {
+    public setColorTone(tone) {
         if (!(tone instanceof Array)) {
             throw new Error("Argument must be an array");
         }
         this.uniforms.colorTone = tone.clone();
-    };
+    }
 
     /**
      * Sets the blend color.
      *
      * @param {array} color - The blend color [r, g, b, a].
      */
-    public setBlendColor(color: [number,number,number,number]) {
+    public setBlendColor(color) {
         if (!(color instanceof Array)) {
             throw new Error("Argument must be an array");
         }
         this.uniforms.blendColor = color.clone();
-    };
+    }
 
     /**
      * Sets the brightness.
      *
      * @param {number} brightness - The brightness (0 to 255).
      */
-    public setBrightness(brightness:number) {
+    public setBrightness(brightness) {
         this.uniforms.brightness = Number(brightness);
-    };
+    }
 
     public _fragmentSrc() {
         const src =
@@ -146,5 +145,5 @@ export class ColorFilter extends PIXI.Filter {
             "  gl_FragColor = vec4(r, g, b, a);" +
             "}";
         return src;
-    };
+    }
 }

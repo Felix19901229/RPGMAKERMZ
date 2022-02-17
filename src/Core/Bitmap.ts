@@ -1,4 +1,7 @@
-import { Graphics, Rectangle, Utils, Stage } from "./index.js";
+
+import { Graphics, Utils } from "./index.js";
+declare var Stage: any;
+declare var Rectangle: any;
 //-----------------------------------------------------------------------------
 /**
  * The basic object that represents an image.
@@ -8,64 +11,22 @@ import { Graphics, Rectangle, Utils, Stage } from "./index.js";
  * @param {number} height - The height of the bitmap.
  */
 export class Bitmap {
-    public _canvas: Nullable<HTMLCanvasElement>;
-    public _context: Nullable<CanvasRenderingContext2D>;
-    public _baseTexture: Nullable<PIXI.BaseTexture>;
-    public _image: Nullable<HTMLImageElement>;
-    public _url: string;
-    public _paintOpacity: number;
-    public _smooth: boolean;
-    public _loadListeners: Function[] = [];
-    public _loadingState: "none" | "loading" | "loaded" | "error" = "none";
-    /**
-     * The face name of the font.
-     *
-     * @type string
-     */
-    public fontFace: string;
-
-    /**
-     * The size of the font in pixels.
-     *
-     * @type number
-     */
-    public fontSize: number;
-
-    /**
-     * Whether the font is bold.
-     *
-     * @type boolean
-     */
-    public fontBold: boolean;
-
-    /**
-     * Whether the font is italic.
-     *
-     * @type boolean
-     */
-    public fontItalic: boolean;
-
-    /**
-     * The color of the text in CSS format.
-     *
-     * @type string
-     */
-    public textColor: string;
-
-    /**
-     * The color of the outline of the text in CSS format.
-     *
-     * @type string
-     */
-    public outlineColor: string;
-
-    /**
-     * The width of the outline of the text.
-     *
-     * @type number
-     */
-    public outlineWidth: number;
-
+    _canvas: HTMLCanvasElement;
+    _context: CanvasRenderingContext2D;
+    _baseTexture: PIXI.BaseTexture;
+    _paintOpacity: number;
+    _url: string;
+    _smooth: boolean;
+    _loadingState: "none"| "loading"| "loaded"| "error";
+    fontFace: string;
+    fontSize: number;
+    fontBold: boolean;
+    fontItalic: boolean;
+    textColor: string;
+    outlineColor: string;
+    outlineWidth: number;
+    _loadListeners: Function[];
+    _image: HTMLImageElement;
     /**
      * The url of the image file.
      *
@@ -73,9 +34,10 @@ export class Bitmap {
      * @type string
      * @name Bitmap#url
      */
-    public get url() {
+    get url() {
         return this._url;
     }
+
     /**
      * The base texture that holds the image.
      *
@@ -83,9 +45,11 @@ export class Bitmap {
      * @type PIXI.BaseTexture
      * @name Bitmap#baseTexture
      */
-    public get baseTexture() {
+    //@ts-ignore
+    get baseTexture() {
         return this._baseTexture;
     }
+
     /**
      * The bitmap image.
      *
@@ -93,9 +57,11 @@ export class Bitmap {
      * @type HTMLImageElement
      * @name Bitmap#image
      */
-    public get image() {
+    get image() {
         return this._image;
     }
+
+
     /**
      * The bitmap canvas.
      *
@@ -103,68 +69,74 @@ export class Bitmap {
      * @type HTMLCanvasElement
      * @name Bitmap#canvas
      */
-    public get canvas() {
+    get canvas() {
         this._ensureCanvas();
         return this._canvas;
     }
 
     /**
-    * The 2d context of the bitmap canvas.
-    *
-    * @readonly
-    * @type CanvasRenderingContext2D
-    * @name Bitmap#context
-    */
-    public get context() {
+     * The 2d context of the bitmap canvas.
+     *
+     * @readonly
+     * @type CanvasRenderingContext2D
+     * @name Bitmap#context
+     */
+
+    get context() {
         this._ensureCanvas();
         return this._context;
     }
 
     /**
-    * The width of the bitmap.
-    *
-    * @readonly
-    * @type number
-    * @name Bitmap#width
-    */
-    public get width() {
+     * The width of the bitmap.
+     *
+     * @readonly
+     * @type number
+     * @name Bitmap#width
+     */
+    //@ts-ignore
+    get width() {
         const image = this._canvas || this._image;
         return image ? image.width : 0;
     }
 
     /**
-    * The height of the bitmap.
-    *
-    * @readonly
-    * @type number
-    * @name Bitmap#height
-    */
-    public get height() {
+     * The height of the bitmap.
+     *
+     * @readonly
+     * @type number
+     * @name Bitmap#height
+     */
+    //@ts-ignore
+    get height() {
         const image = this._canvas || this._image;
         return image ? image.height : 0;
     }
 
     /**
-    * The rectangle of the bitmap.
-    *
-    * @readonly
-    * @type Rectangle
-    * @name Bitmap#rect
-    */
-    public get rect() {
+     * The rectangle of the bitmap.
+     *
+     * @readonly
+     * @type Rectangle
+     * @name Bitmap#rect
+     */
+
+    get rect() {
         return new Rectangle(0, 0, this.width, this.height);
     }
 
+
     /**
-    * Whether the smooth scaling is applied.
-    *
-    * @type boolean
-    * @name Bitmap#smooth
-    */
-    public get smooth() {
+     * Whether the smooth scaling is applied.
+     *
+     * @type boolean
+     * @name Bitmap#smooth
+     */
+
+    get smooth() {
         return this._smooth;
     }
-    public set smooth(value) {
+    set smooth(value) {
         if (this._smooth !== value) {
             this._smooth = value;
             this._updateScaleMode();
@@ -172,11 +144,12 @@ export class Bitmap {
     }
 
     /**
-    * The opacity of the drawing object in the range (0, 255).
-    *
-    * @type number
-    * @name Bitmap#paintOpacity
-    */
+     * The opacity of the drawing object in the range (0, 255).
+     *
+     * @type number
+     * @name Bitmap#paintOpacity
+     */
+
     get paintOpacity() {
         return this._paintOpacity;
     }
@@ -187,11 +160,11 @@ export class Bitmap {
         }
     }
 
-    constructor(width: number, height: number) {
-        this.initialize(width, height);
-    }
 
-    public initialize(width?: number, height?: number) {
+    constructor(...args: [number, number]) {
+        this.initialize(...args);
+    }
+    public initialize(width: number, height: number) {
         this._canvas = null;
         this._context = null;
         this._baseTexture = null;
@@ -200,7 +173,7 @@ export class Bitmap {
         this._paintOpacity = 255;
         this._smooth = true;
         this._loadListeners = [];
-
+    
         // "none", "loading", "loaded", or "error"
         this._loadingState = "none";
 
@@ -256,7 +229,7 @@ export class Bitmap {
          * @type number
          */
         this.outlineWidth = 3;
-    };
+    }
 
     /**
      * Loads a image file.
@@ -264,13 +237,13 @@ export class Bitmap {
      * @param {string} url - The image url of the texture.
      * @returns {Bitmap} The new bitmap object.
      */
-    static load(url: string) {
-        const bitmap: Bitmap = Object.create(Bitmap.prototype);
+    static load(url) {
+        const bitmap = Object.create(Bitmap.prototype);
         bitmap.initialize();
         bitmap._url = url;
         bitmap._startLoading();
         return bitmap;
-    };
+    }
 
     /**
      * Takes a snapshot of the game screen.
@@ -278,7 +251,7 @@ export class Bitmap {
      * @param {Stage} stage - The stage object.
      * @returns {Bitmap} The new bitmap object.
      */
-    static snap(stage: Stage) {
+    static snap(stage) {
         const width = Graphics.width;
         const height = Graphics.height;
         const bitmap = new Bitmap(width, height);
@@ -294,58 +267,56 @@ export class Bitmap {
             canvas.width = 0;
             canvas.height = 0;
         }
-        // 错误
+        //错误
         // renderTexture.destroy({ destroyBase: true });
         renderTexture.destroy(true);
         bitmap.baseTexture.update();
         return bitmap;
-    };
+    }
 
     /**
      * Checks whether the bitmap is ready to render.
      *
      * @returns {boolean} True if the bitmap is ready to render.
-     */
-    public isReady() {
+     */public isReady() {
         return this._loadingState === "loaded" || this._loadingState === "none";
-    };
+    }
 
     /**
      * Checks whether a loading error has occurred.
      *
      * @returns {boolean} True if a loading error has occurred.
-     */
-    public isError() {
+     */public isError() {
         return this._loadingState === "error";
-    };
+    }
+
+
+
     /**
      * Destroys the bitmap.
-     */
-    public destroy() {
+     */public destroy() {
         if (this._baseTexture) {
             this._baseTexture.destroy();
             this._baseTexture = null;
         }
         this._destroyCanvas();
-    };
+    }
 
     /**
      * Resizes the bitmap.
      *
      * @param {number} width - The new width of the bitmap.
      * @param {number} height - The new height of the bitmap.
-     */
-    public resize(width: number, height: number) {
+     */public resize(width, height) {
         width = Math.max(width || 0, 1);
         height = Math.max(height || 0, 1);
         this.canvas.width = width;
         this.canvas.height = height;
-        //错误
-        // width，height为只读属性
+        // 错误,只读属性
         // this.baseTexture.width = width;
         // this.baseTexture.height = height;
         this.baseTexture.setSize(width, height);
-    };
+    }
 
     /**
      * Performs a block transfer.
@@ -359,8 +330,7 @@ export class Bitmap {
      * @param {number} dy - The y coordinate in the destination.
      * @param {number} [dw=sw] The width to draw the image in the destination.
      * @param {number} [dh=sh] The height to draw the image in the destination.
-     */
-    public blt(source: Bitmap, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw?: number, dh?: number) {
+     */public blt(source, sx, sy, sw, sh, dx, dy, dw, dh) {
         dw = dw || sw;
         dh = dh || sh;
         try {
@@ -371,7 +341,7 @@ export class Bitmap {
         } catch (e) {
             //
         }
-    };
+    }
 
     /**
      * Returns pixel color at the specified point.
@@ -379,15 +349,14 @@ export class Bitmap {
      * @param {number} x - The x coordinate of the pixel in the bitmap.
      * @param {number} y - The y coordinate of the pixel in the bitmap.
      * @returns {string} The pixel color (hex format).
-     */
-    public getPixel(x: number, y: number) {
+     */public getPixel(x, y) {
         const data = this.context.getImageData(x, y, 1, 1).data;
         let result = "#";
         for (let i = 0; i < 3; i++) {
             result += data[i].toString(16).padZero(2);
         }
         return result;
-    };
+    }
 
     /**
      * Returns alpha pixel value at the specified point.
@@ -395,11 +364,10 @@ export class Bitmap {
      * @param {number} x - The x coordinate of the pixel in the bitmap.
      * @param {number} y - The y coordinate of the pixel in the bitmap.
      * @returns {string} The alpha value.
-     */
-    public getAlphaPixel(x: number, y: number) {
+     */public getAlphaPixel(x, y) {
         const data = this.context.getImageData(x, y, 1, 1).data;
         return data[3];
-    };
+    }
 
     /**
      * Clears the specified rectangle.
@@ -408,18 +376,16 @@ export class Bitmap {
      * @param {number} y - The y coordinate for the upper-left corner.
      * @param {number} width - The width of the rectangle to clear.
      * @param {number} height - The height of the rectangle to clear.
-     */
-    public clearRect(x: number, y: number, width: number, height: number) {
+     */public clearRect(x, y, width, height) {
         this.context.clearRect(x, y, width, height);
         this._baseTexture.update();
-    };
+    }
 
     /**
      * Clears the entire bitmap.
-     */
-    public clear() {
+     */public clear() {
         this.clearRect(0, 0, this.width, this.height);
-    };
+    }
 
     /**
      * Fills the specified rectangle.
@@ -429,24 +395,22 @@ export class Bitmap {
      * @param {number} width - The width of the rectangle to fill.
      * @param {number} height - The height of the rectangle to fill.
      * @param {string} color - The color of the rectangle in CSS format.
-     */
-    public fillRect(x: number, y: number, width: number, height: number, color: string) {
+     */public fillRect(x, y, width, height, color) {
         const context = this.context;
         context.save();
         context.fillStyle = color;
         context.fillRect(x, y, width, height);
         context.restore();
         this._baseTexture.update();
-    };
+    }
 
     /**
      * Fills the entire bitmap.
      *
      * @param {string} color - The color of the rectangle in CSS format.
-     */
-    public fillAll(color: string) {
+     */public fillAll(color) {
         this.fillRect(0, 0, this.width, this.height, color);
-    };
+    }
 
     /**
      * Draws the specified rectangular frame.
@@ -456,15 +420,14 @@ export class Bitmap {
      * @param {number} width - The width of the rectangle to fill.
      * @param {number} height - The height of the rectangle to fill.
      * @param {string} color - The color of the rectangle in CSS format.
-     */
-    public strokeRect(x: number, y: number, width: number, height: number, color: string) {
+     */public strokeRect(x, y, width, height, color) {
         const context = this.context;
         context.save();
         context.strokeStyle = color;
         context.strokeRect(x, y, width, height);
         context.restore();
         this._baseTexture.update();
-    };
+    }
 
     // prettier-ignore
     /**
@@ -477,9 +440,8 @@ export class Bitmap {
      * @param {string} color1 - The gradient starting color.
      * @param {string} color2 - The gradient ending color.
      * @param {boolean} vertical - Whether the gradient should be draw as vertical or not.
-     */
-    public gradientFillRect(
-        x: number, y: number, width: number, height: number, color1: string, color2: string, vertical: boolean
+     */public gradientFillRect(
+        x, y, width, height, color1, color2, vertical
     ) {
         const context = this.context;
         const x1 = vertical ? x : x + width;
@@ -492,7 +454,7 @@ export class Bitmap {
         context.fillRect(x, y, width, height);
         context.restore();
         this._baseTexture.update();
-    };
+    }
 
     /**
      * Draws a bitmap in the shape of a circle.
@@ -501,8 +463,7 @@ export class Bitmap {
      * @param {number} y - The y coordinate based on the circle center.
      * @param {number} radius - The radius of the circle.
      * @param {string} color - The color of the circle in CSS format.
-     */
-    public drawCircle(x: number, y: number, radius: number, color: string) {
+     */public drawCircle(x, y, radius, color) {
         const context = this.context;
         context.save();
         context.fillStyle = color;
@@ -511,7 +472,7 @@ export class Bitmap {
         context.fill();
         context.restore();
         this._baseTexture.update();
-    };
+    }
 
     /**
      * Draws the outline text to the bitmap.
@@ -522,8 +483,7 @@ export class Bitmap {
      * @param {number} maxWidth - The maximum allowed width of the text.
      * @param {number} lineHeight - The height of the text line.
      * @param {string} align - The alignment of the text.
-     */
-    public drawText(text: string, x: number, y: number, maxWidth: number, lineHeight: number, align?: CanvasTextAlign) {
+     */public drawText(text, x, y, maxWidth, lineHeight, align) {
         // [Note] Different browser makes different rendering with
         //   textBaseline == 'top'. So we use 'alphabetic' here.
         const context = this.context;
@@ -547,22 +507,21 @@ export class Bitmap {
         this._drawTextBody(text, tx, ty, maxWidth);
         context.restore();
         this._baseTexture.update();
-    };
+    }
 
     /**
      * Returns the width of the specified text.
      *
      * @param {string} text - The text to be measured.
      * @returns {number} The width of the text in pixels.
-     */
-    public measureTextWidth(text) {
+     */public measureTextWidth(text) {
         const context = this.context;
         context.save();
         context.font = this._makeFontNameText();
         const width = context.measureText(text).width;
         context.restore();
         return width;
-    };
+    }
 
     /**
      * Adds a callback function that will be called when the bitmap is loaded.
@@ -575,43 +534,38 @@ export class Bitmap {
         } else {
             listner(this);
         }
-    };
+    }
 
     /**
      * Tries to load the image again.
      */
     public retry() {
         this._startLoading();
-    };
-
+    }
     public _makeFontNameText() {
         const italic = this.fontItalic ? "Italic " : "";
         const bold = this.fontBold ? "Bold " : "";
         return italic + bold + this.fontSize + "px " + this.fontFace;
-    };
-
+    }
     public _drawTextOutline(text, tx, ty, maxWidth) {
         const context = this.context;
         context.strokeStyle = this.outlineColor;
         context.lineWidth = this.outlineWidth;
         context.lineJoin = "round";
         context.strokeText(text, tx, ty, maxWidth);
-    };
-
+    }
     public _drawTextBody(text, tx, ty, maxWidth) {
         const context = this.context;
         context.fillStyle = this.textColor;
         context.fillText(text, tx, ty, maxWidth);
-    };
-
-    public _createCanvas(width: number, height: number) {
+    }
+    public _createCanvas(width, height) {
         this._canvas = document.createElement("canvas");
         this._context = this._canvas.getContext("2d");
         this._canvas.width = width;
         this._canvas.height = height;
         this._createBaseTexture(this._canvas);
-    };
-
+    }
     public _ensureCanvas() {
         if (!this._canvas) {
             if (this._image) {
@@ -621,29 +575,25 @@ export class Bitmap {
                 this._createCanvas(0, 0);
             }
         }
-    };
-
+    }
     public _destroyCanvas() {
         if (this._canvas) {
             this._canvas.width = 0;
             this._canvas.height = 0;
             this._canvas = null;
         }
-    };
-
-    public _createBaseTexture(source: HTMLCanvasElement | HTMLImageElement | PIXI.resources.Resource) {
-        //错误
-        // this._baseTexture = new PIXI.BaseTexture(source);
-        // this._baseTexture.mipmap = false;
+    }
+    public _createBaseTexture(source) {
         this._baseTexture = new PIXI.BaseTexture(source);
+        //错误 mipmap是MIPMAP_MODES类型,不是boolean类型
+        // this._baseTexture.mipmap = false;
         this._baseTexture.mipmap = PIXI.MIPMAP_MODES.OFF;
-        //错误
+        // 错误只读属性
         // this._baseTexture.width = source.width;
         // this._baseTexture.height = source.height;
         this._baseTexture.setSize(source.width, source.height)
         this._updateScaleMode();
-    };
-
+    }
     public _updateScaleMode() {
         if (this._baseTexture) {
             if (this._smooth) {
@@ -652,8 +602,7 @@ export class Bitmap {
                 this._baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
             }
         }
-    };
-
+    }
     public _startLoading() {
         this._image = new Image();
         this._image.onload = this._onLoad.bind(this);
@@ -665,8 +614,7 @@ export class Bitmap {
         } else {
             this._image.src = this._url;
         }
-    };
-
+    }
     public _startDecrypting() {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", this._url + "_");
@@ -674,9 +622,8 @@ export class Bitmap {
         xhr.onload = () => this._onXhrLoad(xhr);
         xhr.onerror = this._onError.bind(this);
         xhr.send();
-    };
-
-    public _onXhrLoad(xhr: XMLHttpRequest) {
+    }
+    public _onXhrLoad(xhr) {
         if (xhr.status < 400) {
             const arrayBuffer = Utils.decryptArrayBuffer(xhr.response);
             const blob = new Blob([arrayBuffer]);
@@ -684,8 +631,7 @@ export class Bitmap {
         } else {
             this._onError();
         }
-    };
-
+    }
     public _onLoad() {
         if (Utils.hasEncryptedImages()) {
             URL.revokeObjectURL(this._image.src);
@@ -693,16 +639,14 @@ export class Bitmap {
         this._loadingState = "loaded";
         this._createBaseTexture(this._image);
         this._callLoadListeners();
-    };
-
+    }
     public _callLoadListeners() {
         while (this._loadListeners.length > 0) {
             const listener = this._loadListeners.shift();
             listener(this);
         }
-    };
-
+    }
     public _onError() {
         this._loadingState = "error";
-    };
+    }
 }

@@ -1,4 +1,6 @@
-import { Bitmap, Rectangle, ColorFilter, TilingSprite } from "./index.js";
+import { Bitmap, Rectangle } from "./index.js";
+declare var ColorFilter: any;
+//-----------------------------------------------------------------------------
 /**
  * The basic object that is rendered to the game screen.
  *
@@ -7,31 +9,31 @@ import { Bitmap, Rectangle, ColorFilter, TilingSprite } from "./index.js";
  * @param {Bitmap} bitmap - The image for the sprite.
  */
 export class Sprite extends PIXI.Sprite {
-    public spriteId: number;
-    public _bitmap: Nullable<Bitmap>;
-    public _frame: Nullable<Rectangle>;
-    public _hue: number;
-    public _blendColor: Nullable<[number, number, number, number]>;
-    public _colorTone: Nullable<[number, number, number, number]>;
-    public _colorFilter: Nullable<ColorFilter>;
-    public _blendMode: Nullable<PIXI.BLEND_MODES>;
-    public _hidden: boolean;
-    public _refreshFrame: boolean;
-    static _emptyBaseTexture: Nullable<PIXI.BaseTexture>;
-    static _counter: number;
-    public children: TilingSprite[] = [];
-    public ax: number;
-    public ay: number;
+    static _emptyBaseTexture = null;
+    static _counter = 0;
+    _frame: Rectangle;
+    _hue: number;
+    _blendColor: [number, number, number, number];
+    _colorTone: [number, number, number, number];
+    _blendMode: PIXI.BLEND_MODES;
+    _hidden: boolean;
+    spriteId: number;
+    _colorFilter: any;
+    _bitmap: Bitmap;
+    children:Sprite[]=[];
+    _refreshFrame: boolean;
+    ax:number;
+    ay:number;
     /**
      * The image for the sprite.
      *
      * @type Bitmap
      * @name Sprite#bitmap
      */
-    public get bitmap() {
+    get bitmap() {
         return this._bitmap;
     }
-    public set bitmap(value) {
+    set bitmap(value) {
         if (this._bitmap !== value) {
             this._bitmap = value;
             this._onBitmapChange();
@@ -45,10 +47,10 @@ export class Sprite extends PIXI.Sprite {
      * @name Sprite#width
      */
     //@ts-ignore
-    public get width() {
+    get width() {
         return this._frame.width;
     }
-    public set width(value) {
+    set width(value) {
         this._frame.width = value;
         this._refresh();
     }
@@ -60,10 +62,10 @@ export class Sprite extends PIXI.Sprite {
      * @name Sprite#height
      */
     //@ts-ignore
-    public get height() {
+    get height() {
         return this._frame.height;
     }
-    public set height(value) {
+    set height(value) {
         this._frame.height = value;
         this._refresh();
     }
@@ -74,10 +76,10 @@ export class Sprite extends PIXI.Sprite {
      * @type number
      * @name Sprite#opacity
      */
-    public get opacity() {
+    get opacity() {
         return this.alpha * 255;
     }
-    public set opacity(value) {
+    set opacity(value) {
         this.alpha = value.clamp(0, 255) / 255;
     }
 
@@ -88,7 +90,7 @@ export class Sprite extends PIXI.Sprite {
      * @name Sprite#blendMode
      */
     //@ts-ignore
-    public get blendMode() {
+    get blendMode() {
         if (this._colorFilter) {
             return this._colorFilter.blendMode;
         } else {
@@ -101,14 +103,15 @@ export class Sprite extends PIXI.Sprite {
             this._colorFilter.blendMode = value;
         }
     }
-    constructor(bitmap?: Bitmap) {
+    constructor(...args: [Bitmap?]) {
         super();
         delete this.width;
         delete this.height;
         delete this.blendMode;
-        this.initialize(bitmap);
+        this.initialize(...args);
     }
-    public initialize(bitmap?: Bitmap) {
+
+    public initialize(bitmap?:Bitmap) {
         if (!Sprite._emptyBaseTexture) {
             Sprite._emptyBaseTexture = new PIXI.BaseTexture();
             Sprite._emptyBaseTexture.setSize(1, 1);
@@ -126,14 +129,19 @@ export class Sprite extends PIXI.Sprite {
         this._blendMode = PIXI.BLEND_MODES.NORMAL;
         this._hidden = false;
         this._onBitmapChange();
-    };
+    }
+
+
+
+
     /**
      * Destroys the sprite.
      */
-    public destroy(...args) {
-        const options = { children: true, texture: true };
+    public destroy() {
+        const options = { children: true, texture: true }
         PIXI.Sprite.prototype.destroy.call(this, options);
-    };
+    }
+
     /**
      * Updates the sprite for each frame.
      */
@@ -143,7 +151,7 @@ export class Sprite extends PIXI.Sprite {
                 child.update();
             }
         }
-    };
+    }
 
     /**
      * Makes the sprite "hidden".
@@ -151,7 +159,7 @@ export class Sprite extends PIXI.Sprite {
     public hide() {
         this._hidden = true;
         this.updateVisibility();
-    };
+    }
 
     /**
      * Releases the "hidden" state of the sprite.
@@ -159,14 +167,14 @@ export class Sprite extends PIXI.Sprite {
     public show() {
         this._hidden = false;
         this.updateVisibility();
-    };
+    }
 
     /**
      * Reflects the "hidden" state of the sprite to the visible state.
      */
     public updateVisibility() {
         this.visible = !this._hidden;
-    };
+    }
 
     /**
      * Sets the x and y at once.
@@ -174,10 +182,10 @@ export class Sprite extends PIXI.Sprite {
      * @param {number} x - The x coordinate of the sprite.
      * @param {number} y - The y coordinate of the sprite.
      */
-    public move(x: number, y: number) {
+    public move(x, y,...args:number[]) {
         this.x = x;
         this.y = y;
-    };
+    }
 
     /**
      * Sets the rectagle of the bitmap that the sprite displays.
@@ -187,7 +195,7 @@ export class Sprite extends PIXI.Sprite {
      * @param {number} width - The width of the frame.
      * @param {number} height - The height of the frame.
      */
-    public setFrame(x: number, y: number, width: number, height: number) {
+    public setFrame(x, y, width, height) {
         this._refreshFrame = false;
         const frame = this._frame;
         if (
@@ -202,19 +210,19 @@ export class Sprite extends PIXI.Sprite {
             frame.height = height;
             this._refresh();
         }
-    };
+    }
 
     /**
      * Sets the hue rotation value.
      *
      * @param {number} hue - The hue value (-360, 360).
      */
-    public setHue(hue: number) {
+    public setHue(hue) {
         if (this._hue !== Number(hue)) {
             this._hue = Number(hue);
             this._updateColorFilter();
         }
-    };
+    }
 
     /**
      * Gets the blend color for the sprite.
@@ -223,22 +231,22 @@ export class Sprite extends PIXI.Sprite {
      */
     public getBlendColor() {
         return this._blendColor.clone();
-    };
+    }
 
     /**
      * Sets the blend color for the sprite.
      *
      * @param {array} color - The blend color [r, g, b, a].
      */
-    public setBlendColor(color: [RGB['R'], RGB['G'], RGB['B'], RGB['GRAY']]) {
+    public setBlendColor(color:[number,number,number,number]) {
         if (!(color instanceof Array)) {
             throw new Error("Argument must be an array");
         }
         if (!this._blendColor.equals(color)) {
-            this._blendColor = color.clone() as Sprite['_blendColor'];
+            this._blendColor = color.clone();
             this._updateColorFilter();
         }
-    };
+    }
 
     /**
      * Gets the color tone for the sprite.
@@ -247,22 +255,22 @@ export class Sprite extends PIXI.Sprite {
      */
     public getColorTone() {
         return this._colorTone.clone();
-    };
+    }
 
     /**
      * Sets the color tone for the sprite.
      *
      * @param {array} tone - The color tone [r, g, b, gray].
      */
-    public setColorTone(tone: [number, number, number, number]) {
+    public setColorTone(tone:[number,number,number,number]) {
         if (!(tone instanceof Array)) {
             throw new Error("Argument must be an array");
         }
         if (!this._colorTone.equals(tone)) {
-            this._colorTone = tone.clone() as Sprite['_colorTone'];
+            this._colorTone = tone.clone();
             this._updateColorFilter();
         }
-    };
+    }
 
     public _onBitmapChange() {
         if (this._bitmap) {
@@ -272,9 +280,9 @@ export class Sprite extends PIXI.Sprite {
             this._refreshFrame = false;
             this.texture.frame = new Rectangle();
         }
-    };
+    }
 
-    public _onBitmapLoad(bitmapLoaded: Bitmap) {
+    public _onBitmapLoad(bitmapLoaded) {
         if (bitmapLoaded === this._bitmap) {
             if (this._refreshFrame && this._bitmap) {
                 this._refreshFrame = false;
@@ -283,7 +291,7 @@ export class Sprite extends PIXI.Sprite {
             }
         }
         this._refresh();
-    };
+    }
 
     public _refresh() {
         const texture = this.texture;
@@ -312,7 +320,7 @@ export class Sprite extends PIXI.Sprite {
             }
             (texture as any)._updateID++;
         }
-    };
+    }
 
     public _createColorFilter() {
         this._colorFilter = new ColorFilter();
@@ -320,7 +328,7 @@ export class Sprite extends PIXI.Sprite {
             this.filters = [];
         }
         this.filters.push(this._colorFilter);
-    };
+    }
 
     public _updateColorFilter() {
         if (!this._colorFilter) {
@@ -329,9 +337,5 @@ export class Sprite extends PIXI.Sprite {
         this._colorFilter.setHue(this._hue);
         this._colorFilter.setBlendColor(this._blendColor);
         this._colorFilter.setColorTone(this._colorTone);
-    };
+    }
 }
-
-
-
-

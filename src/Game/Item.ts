@@ -1,4 +1,5 @@
-import { DataManager } from "../Manager/Data.js";
+type DataManager = any;
+declare const DataManager: DataManager;
 //-----------------------------------------------------------------------------
 /**
  * Game_Item
@@ -7,10 +8,10 @@ import { DataManager } from "../Manager/Data.js";
  * required because save data should not include the database object itself.
 */
 export class Game_Item {
-    _dataClass: string;
+    _dataClass: "weapon" | "armor" | "item" | "skill" | "";
     _itemId: number;
-    constructor(item?) {
-        this.initialize(item);
+    constructor(...args: [null?]) {
+        this.initialize(...args);
     }
 
     public initialize(item?) {
@@ -19,39 +20,39 @@ export class Game_Item {
         if (item) {
             this.setObject(item);
         }
-    };
+    }
 
     public isSkill() {
         return this._dataClass === "skill";
-    };
+    }
 
     public isItem() {
         return this._dataClass === "item";
-    };
+    }
 
     public isUsableItem() {
         return this.isSkill() || this.isItem();
-    };
+    }
 
     public isWeapon() {
         return this._dataClass === "weapon";
-    };
+    }
 
     public isArmor() {
         return this._dataClass === "armor";
-    };
+    }
 
     public isEquipItem() {
         return this.isWeapon() || this.isArmor();
-    };
+    }
 
     public isNull() {
         return this._dataClass === "";
-    };
+    }
 
     public itemId() {
         return this._itemId;
-    };
+    }
 
     public object() {
         if (this.isSkill()) {
@@ -65,7 +66,7 @@ export class Game_Item {
         } else {
             return null;
         }
-    };
+    }
 
     public setObject(item) {
         if (DataManager.isSkill(item)) {
@@ -80,10 +81,11 @@ export class Game_Item {
             this._dataClass = "";
         }
         this._itemId = item ? item.id : 0;
-    };
+    }
 
     public setEquip(isWeapon, itemId) {
         this._dataClass = isWeapon ? "weapon" : "armor";
         this._itemId = itemId;
-    };
+    }
+
 }

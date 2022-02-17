@@ -8,13 +8,12 @@
  * @param {number} y - The y coordinate.
  */
 export class Point extends PIXI.Point {
-    constructor(x?:number, y?:number) {
-        super(x,y);
-        this.initialize(x,y);
+    constructor(...args:[number?,number?]) {
+        super(...args);
+        this.initialize(...args);
     }
-
-    public initialize(x?:number, y?:number) {
+    public initialize(x?: number, y?: number) {
         PIXI.Point.call(this, x, y);
-    };
+    }
 }
 

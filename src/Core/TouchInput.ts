@@ -1,44 +1,34 @@
 import { Graphics } from "./index.js";
+type State = {
+    triggered: boolean;
+    cancelled: boolean;
+    moved: boolean;
+    hovered: boolean;
+    released: boolean;
+    wheelX: number;
+    wheelY: number;
+}
 //-----------------------------------------------------------------------------
 /**
  * The static class that handles input data from the mouse and touchscreen.
  *
  * @namespace
  */
+
 export class TouchInput {
-    static _currentState: { triggered: boolean; cancelled: boolean; moved: boolean; hovered: boolean; released: boolean; wheelX: number; wheelY: number; };
+    static _date: number;
+    static _currentState: State;
     static _x: number;
     static _y: number;
-    static _date: number;
-
-    /**
-     * The wait time of the pseudo key repeat in frames.
-     *
-     * @type number
-     */
-    static keyRepeatWait = 24;
-
-    /**
-     * The interval of the pseudo key repeat in frames.
-     *
-     * @type number
-     */
-    static keyRepeatInterval = 6;
-
-    /**
-     * The threshold number of pixels to treat as moved.
-     *
-     * @type number
-     */
-    static moveThreshold = 10;
     static _mousePressed: boolean;
     static _screenPressed: boolean;
     static _pressedTime: number;
     static _clicked: boolean;
-    static _newState: { triggered: boolean; cancelled: boolean; moved: boolean; hovered: boolean; released: boolean; wheelX: number; wheelY: number; };
+    static _newState: { triggered: boolean; cancelled: boolean; moved: boolean; hovered: boolean; released: boolean; wheelX: number; wheelY: number; }
     static _triggerX: number;
     static _triggerY: number;
     static _moved: boolean;
+
     /**
      * The horizontal scroll amount.
      *
@@ -97,14 +87,35 @@ export class TouchInput {
     constructor() {
         throw new Error("This is a static class");
     }
-    /**
-     * Initializes the touch system.
-     */
-    static initialize() {
+
+/**
+ * Initializes the touch system.
+ */
+static initialize() {
         this.clear();
         this._setupEventHandlers();
-    };
+    }
 
+    /**
+     * The wait time of the pseudo key repeat in frames.
+     *
+     * @type number
+     */
+    static keyRepeatWait = 24;
+
+    /**
+     * The interval of the pseudo key repeat in frames.
+     *
+     * @type number
+     */
+    static keyRepeatInterval = 6;
+
+    /**
+     * The threshold number of pixels to treat as moved.
+     *
+     * @type number
+     */
+    static moveThreshold = 10;
 
     /**
      * Clears all the touch data.
@@ -122,7 +133,7 @@ export class TouchInput {
         this._triggerY = 0;
         this._moved = false;
         this._date = 0;
-    };
+    }
 
     /**
      * Updates the touch data.
@@ -134,7 +145,7 @@ export class TouchInput {
         if (this.isPressed()) {
             this._pressedTime++;
         }
-    };
+    }
 
     /**
      * Checks whether the mouse button or touchscreen has been pressed and
@@ -144,7 +155,7 @@ export class TouchInput {
      */
     static isClicked() {
         return this._clicked;
-    };
+    }
 
     /**
      * Checks whether the mouse button or touchscreen is currently pressed down.
@@ -153,7 +164,7 @@ export class TouchInput {
      */
     static isPressed() {
         return this._mousePressed || this._screenPressed;
-    };
+    }
 
     /**
      * Checks whether the left mouse button or touchscreen is just pressed.
@@ -162,7 +173,7 @@ export class TouchInput {
      */
     static isTriggered() {
         return this._currentState.triggered;
-    };
+    }
 
     /**
      * Checks whether the left mouse button or touchscreen is just pressed
@@ -177,7 +188,7 @@ export class TouchInput {
                 (this._pressedTime >= this.keyRepeatWait &&
                     this._pressedTime % this.keyRepeatInterval === 0))
         );
-    };
+    }
 
     /**
      * Checks whether the left mouse button or touchscreen is kept depressed.
@@ -186,7 +197,7 @@ export class TouchInput {
      */
     static isLongPressed() {
         return this.isPressed() && this._pressedTime >= this.keyRepeatWait;
-    };
+    }
 
     /**
      * Checks whether the right mouse button is just pressed.
@@ -195,7 +206,7 @@ export class TouchInput {
      */
     static isCancelled() {
         return this._currentState.cancelled;
-    };
+    }
 
     /**
      * Checks whether the mouse or a finger on the touchscreen is moved.
@@ -204,7 +215,7 @@ export class TouchInput {
      */
     static isMoved() {
         return this._currentState.moved;
-    };
+    }
 
     /**
      * Checks whether the mouse is moved without pressing a button.
@@ -213,7 +224,7 @@ export class TouchInput {
      */
     static isHovered() {
         return this._currentState.hovered;
-    };
+    }
 
     /**
      * Checks whether the left mouse button or touchscreen is released.
@@ -222,7 +233,7 @@ export class TouchInput {
      */
     static isReleased() {
         return this._currentState.released;
-    };
+    }
 
     static _createNewState() {
         return {
@@ -233,11 +244,11 @@ export class TouchInput {
             released: false,
             wheelX: 0,
             wheelY: 0
-        };
-    };
+        }
+    }
 
     static _setupEventHandlers() {
-        const pf = { passive: false };
+        const pf = { passive: false }
         document.addEventListener("mousedown", this._onMouseDown.bind(this));
         document.addEventListener("mousemove", this._onMouseMove.bind(this));
         document.addEventListener("mouseup", this._onMouseUp.bind(this));
@@ -247,9 +258,9 @@ export class TouchInput {
         document.addEventListener("touchend", this._onTouchEnd.bind(this));
         document.addEventListener("touchcancel", this._onTouchCancel.bind(this));
         window.addEventListener("blur", this._onLostFocus.bind(this));
-    };
+    }
 
-    static _onMouseDown(event: MouseEvent) {
+    static _onMouseDown(event:MouseEvent) {
         if (event.button === 0) {
             this._onLeftButtonDown(event);
         } else if (event.button === 1) {
@@ -257,9 +268,9 @@ export class TouchInput {
         } else if (event.button === 2) {
             this._onRightButtonDown(event);
         }
-    };
+    }
 
-    static _onLeftButtonDown(event: MouseEvent) {
+    static _onLeftButtonDown(event) {
         const x = Graphics.pageToCanvasX(event.pageX);
         const y = Graphics.pageToCanvasY(event.pageY);
         if (Graphics.isInsideCanvas(x, y)) {
@@ -267,21 +278,21 @@ export class TouchInput {
             this._pressedTime = 0;
             this._onTrigger(x, y);
         }
-    };
+    }
 
-    static _onMiddleButtonDown(event: MouseEvent) {
+    static _onMiddleButtonDown(...args:[MouseEvent]/*event*/) {
         //
-    };
+    }
 
-    static _onRightButtonDown(event: MouseEvent) {
+    static _onRightButtonDown(event) {
         const x = Graphics.pageToCanvasX(event.pageX);
         const y = Graphics.pageToCanvasY(event.pageY);
         if (Graphics.isInsideCanvas(x, y)) {
             this._onCancel(x, y);
         }
-    };
+    }
 
-    static _onMouseMove(event: MouseEvent) {
+    static _onMouseMove(event) {
         const x = Graphics.pageToCanvasX(event.pageX);
         const y = Graphics.pageToCanvasY(event.pageY);
         if (this._mousePressed) {
@@ -289,24 +300,24 @@ export class TouchInput {
         } else if (Graphics.isInsideCanvas(x, y)) {
             this._onHover(x, y);
         }
-    };
+    }
 
-    static _onMouseUp(event: MouseEvent) {
+    static _onMouseUp(event) {
         if (event.button === 0) {
             const x = Graphics.pageToCanvasX(event.pageX);
             const y = Graphics.pageToCanvasY(event.pageY);
             this._mousePressed = false;
             this._onRelease(x, y);
         }
-    };
+    }
 
-    static _onWheel(event: WheelEvent) {
+    static _onWheel(event) {
         this._newState.wheelX += event.deltaX;
         this._newState.wheelY += event.deltaY;
         event.preventDefault();
-    };
+    }
 
-    static _onTouchStart(event: TouchEvent) {
+    static _onTouchStart(event) {
         for (const touch of event.changedTouches) {
             const x = Graphics.pageToCanvasX(touch.pageX);
             const y = Graphics.pageToCanvasY(touch.pageY);
@@ -324,34 +335,34 @@ export class TouchInput {
         if (window.cordova || window.navigator.standalone) {
             event.preventDefault();
         }
-    };
+    }
 
-    static _onTouchMove(event: TouchEvent) {
+    static _onTouchMove(event) {
         for (const touch of event.changedTouches) {
             const x = Graphics.pageToCanvasX(touch.pageX);
             const y = Graphics.pageToCanvasY(touch.pageY);
             this._onMove(x, y);
         }
-    };
+    }
 
-    static _onTouchEnd(event: TouchEvent) {
+    static _onTouchEnd(event) {
         for (const touch of event.changedTouches) {
             const x = Graphics.pageToCanvasX(touch.pageX);
             const y = Graphics.pageToCanvasY(touch.pageY);
             this._screenPressed = false;
             this._onRelease(x, y);
         }
-    };
+    }
 
     static _onTouchCancel(/*event*/) {
         this._screenPressed = false;
-    };
+    }
 
     static _onLostFocus() {
         this.clear();
-    };
+    }
 
-    static _onTrigger(x: number, y: number) {
+    static _onTrigger(x, y) {
         this._newState.triggered = true;
         this._x = x;
         this._y = y;
@@ -359,15 +370,15 @@ export class TouchInput {
         this._triggerY = y;
         this._moved = false;
         this._date = Date.now();
-    };
+    }
 
-    static _onCancel(x: number, y: number) {
+    static _onCancel(x, y) {
         this._newState.cancelled = true;
         this._x = x;
         this._y = y;
-    };
+    }
 
-    static _onMove(x: number, y: number) {
+    static _onMove(x, y) {
         const dx = Math.abs(x - this._triggerX);
         const dy = Math.abs(y - this._triggerY);
         if (dx > this.moveThreshold || dy > this.moveThreshold) {
@@ -378,18 +389,17 @@ export class TouchInput {
             this._x = x;
             this._y = y;
         }
-    };
+    }
 
-    static _onHover(x: number, y: number) {
+    static _onHover(x, y) {
         this._newState.hovered = true;
         this._x = x;
         this._y = y;
-    };
+    }
 
-    static _onRelease(x: number, y: number) {
+    static _onRelease(x, y) {
         this._newState.released = true;
         this._x = x;
         this._y = y;
-    };
+    }
 }
-

@@ -6,30 +6,30 @@
 */
 export class Game_Switches {
     _data: null[];
-    constructor() {
-        this.initialize();
+    constructor(...args: any[]) {
+        this.initialize(...args);
     }
-    public initialize() {
+
+    public initialize(...args) {
         this.clear();
-    };
+    }
 
     public clear() {
         this._data = [];
-    };
+    }
 
     public value(switchId) {
         return !!this._data[switchId];
-    };
+    }
 
     public setValue(switchId, value) {
         if (switchId > 0 && switchId < $dataSystem.switches.length) {
             this._data[switchId] = value;
             this.onChange();
         }
-    };
+    }
 
-    public onChange = function () {
+    public onChange() {
         $gameMap.requestRefresh();
-    };
+    }
 }
-

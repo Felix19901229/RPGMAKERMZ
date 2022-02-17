@@ -1,4 +1,13 @@
-import { Window } from "./index.js";
+declare type Window_MapName=any;
+declare type Window_Message=any;
+declare type Window_ScrollText=any;
+declare type Window_Gold=any;
+declare type Window_NameBox=any;
+declare type Window_ChoiceList=any;
+declare type Window_NumberInput=any;
+declare type Window_EventItem=any;
+declare type Sprite_Button=any;
+declare type children = (Window_MapName|Window_Message|Window_ScrollText|Window_Gold|Window_NameBox|Window_ChoiceList|Window_NumberInput|Window_EventItem|Sprite_Button)[];
 //-----------------------------------------------------------------------------
 /**
  * The layer which contains game windows.
@@ -7,33 +16,32 @@ import { Window } from "./index.js";
  * @extends PIXI.Container
  */
 export class WindowLayer extends PIXI.Container {
-    public children: Window[] =[];
-    constructor() {
+    children: children=[];
+    constructor(...args:any[]) {
         super();
-        this.initialize();
+        this.initialize(...args);
     }
-
-    public initialize () {
+    public initialize(...args) {
         PIXI.Container.call(this);
-    };
+    }
 
     /**
      * Updates the window layer for each frame.
      */
-    public update () {
+    public update() {
         for (const child of this.children) {
             if (child.update) {
                 child.update();
             }
         }
-    };
+    }
 
     /**
      * Renders the object using the WebGL renderer.
      *
      * @param {PIXI.Renderer} renderer - The renderer.
      */
-    public render(renderer:PIXI.Renderer) {
+    public render (renderer:PIXI.Renderer) {
         if (!this.visible) {
             return;
         }
@@ -75,6 +83,9 @@ export class WindowLayer extends PIXI.Container {
                 child.render(renderer);
             }
         }
+
         renderer.batch.flush();
-    };
+    }
+
 }
+

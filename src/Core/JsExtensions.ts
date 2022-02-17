@@ -1,3 +1,4 @@
+//-----------------------------------------------------------------------------
 /**
  * This section contains some methods that will be added to the standard
  * Javascript objects.
@@ -13,7 +14,7 @@
  */
 Array.prototype.clone = function () {
     return this.slice(0);
-};
+}
 
 Object.defineProperty(Array.prototype, "clone", {
     enumerable: false
@@ -29,7 +30,7 @@ Object.defineProperty(Array.prototype, "clone", {
  */
 Array.prototype.contains = function (element) {
     return this.includes(element);
-};
+}
 
 Object.defineProperty(Array.prototype, "contains", {
     enumerable: false
@@ -42,7 +43,7 @@ Object.defineProperty(Array.prototype, "contains", {
  * @param {array} array - The array to compare to.
  * @returns {boolean} True if the two arrays are the same.
  */
-Array.prototype.equals = function (array:any[]) {
+Array.prototype.equals = function (array) {
     if (!array || this.length !== array.length) {
         return false;
     }
@@ -56,7 +57,7 @@ Array.prototype.equals = function (array:any[]) {
         }
     }
     return true;
-};
+}
 
 Object.defineProperty(Array.prototype, "equals", {
     enumerable: false
@@ -78,7 +79,7 @@ Array.prototype.remove = function (element) {
             return this;
         }
     }
-};
+}
 
 Object.defineProperty(Array.prototype, "remove", {
     enumerable: false
@@ -93,7 +94,7 @@ Object.defineProperty(Array.prototype, "remove", {
  */
 Math.randomInt = function (max) {
     return Math.floor(max * Math.random());
-};
+}
 
 /**
  * Returns a number whose value is limited to the given range.
@@ -103,9 +104,9 @@ Math.randomInt = function (max) {
  * @param {number} max - The upper boundary.
  * @returns {number} A number in the range (min, max).
  */
-Number.prototype.clamp = function (min:number, max:number) {
-    return Math.min(Math.max(this as number, min), max);
-};
+Number.prototype.clamp = function (min, max) {
+    return Math.min(Math.max(Number(this), min), max);
+}
 
 /**
  * Returns a modulo value which is always positive.
@@ -114,9 +115,9 @@ Number.prototype.clamp = function (min:number, max:number) {
  * @param {number} n - The divisor.
  * @returns {number} A modulo value.
  */
-Number.prototype.mod = function (n:number) {
-    return (((this as number) % n) + n) % n;
-};
+Number.prototype.mod = function (n) {
+    return ((Number(this) % n) + n) % n;
+}
 
 /**
  * Makes a number string with leading zeros.
@@ -125,9 +126,9 @@ Number.prototype.mod = function (n:number) {
  * @param {number} length - The length of the output string.
  * @returns {string} A string with leading zeros.
  */
-Number.prototype.padZero = function (length:number) {
+Number.prototype.padZero = function (length) {
     return String(this).padZero(length);
-};
+}
 
 /**
  * Checks whether the string contains a given string.
@@ -139,7 +140,7 @@ Number.prototype.padZero = function (length:number) {
  */
 String.prototype.contains = function (string) {
     return this.includes(string);
-};
+}
 
 /**
  * Replaces %1, %2 and so on in the string to the arguments.
@@ -150,7 +151,7 @@ String.prototype.contains = function (string) {
  */
 String.prototype.format = function () {
     return this.replace(/%([0-9]+)/g, (s, n) => arguments[Number(n) - 1]);
-};
+}
 
 /**
  * Makes a number string with leading zeros.
@@ -161,4 +162,4 @@ String.prototype.format = function () {
  */
 String.prototype.padZero = function (length) {
     return this.padStart(length, "0");
-};
+}

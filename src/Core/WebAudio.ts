@@ -7,40 +7,37 @@ import { Utils } from "./index.js";
  * @param {string} url - The url of the audio file.
  */
 export class WebAudio {
-    
-    static _context: AudioContext;
-    static _masterGainNode: GainNode;
+    static _masterGainNode: Nullable<GainNode>;
+    static _context: Nullable<AudioContext>;
     static _masterVolume: number;
-    public frameCount:number;
-    public name:string;
-    public _url: string;
-    public _volume: number;
-    public _gainNode: GainNode;
-    public _pitch: number;
-    public _loop: boolean;
-    public _pan: number;
-    public _data: Nullable<Uint8Array>;
-    public _fetchedSize: number;
-    public _fetchedData: Uint8Array[];
-    public _buffers: AudioBuffer[];
-    public _sourceNodes: AudioBufferSourceNode[];
-    public _pannerNode: PannerNode;
-    public _totalTime: number;
-    public _sampleRate: number;
-    public _loopStart: number;
-    public _loopLength: number;
-    public _loopStartTime: number;
-    public _loopLengthTime: number;
-    public _startTime: number;
-    public _endTimer: NodeJS.Timeout;
-    public _loadListeners: Function[];
-    public _stopListeners: Function[];
-    public _lastUpdateTime: number;
-    public _isLoaded: boolean;
-    public _isError: boolean;
-    public _isPlaying: boolean;
-    public _decoder: any;
 
+    _url: string;
+    _volume: number;
+    _gainNode: Nullable<GainNode>;
+    _pitch: number;
+    _pan: number;
+    _lastUpdateTime: number;
+    _isError: boolean;
+    _isPlaying: boolean;
+    _isLoaded: boolean;
+    _fetchedSize: number;
+    _totalTime: number;
+    _sampleRate: number;
+    _loop: number;
+    _loopStart: number;
+    _loopLength: number;
+    _loopStartTime: number;
+    _loopLengthTime: number;
+    _startTime: number;
+    _data: Uint8Array;
+    _fetchedData: Uint8Array[]=[];
+    _buffers: AudioBuffer[]=[];
+    _sourceNodes: AudioBufferSourceNode[]=[];
+    _pannerNode: Nullable<PannerNode>;
+    _endTimer: NodeJS.Timeout;
+    _loadListeners: Function[];
+    _stopListeners: Function[];
+    _decoder: any;
     /**
      * The url of the audio file.
      *
@@ -48,21 +45,20 @@ export class WebAudio {
      * @type string
      * @name WebAudio#url
      */
-    public get url() {
+    get url() {
         return this._url;
     }
 
-
     /**
-    * The volume of the audio.
-    *
-    * @type number
-    * @name WebAudio#volume
-    */
-    public get volume() {
+     * The volume of the audio.
+     *
+     * @type number
+     * @name WebAudio#volume
+     */
+    get volume() {
         return this._volume;
     }
-    public set volume(value) {
+    set volume(value) {
         this._volume = value;
         if (this._gainNode) {
             this._gainNode.gain.setValueAtTime(
@@ -73,15 +69,15 @@ export class WebAudio {
     }
 
     /**
-    * The pitch of the audio.
-    *
-    * @type number
-    * @name WebAudio#pitch
-    */
-    public get pitch() {
+     * The pitch of the audio.
+     *
+     * @type number
+     * @name WebAudio#pitch
+     */
+    get pitch() {
         return this._pitch;
     }
-    public set pitch(value) {
+    set pitch(value) {
         if (this._pitch !== value) {
             this._pitch = value;
             if (this.isPlaying()) {
@@ -89,29 +85,29 @@ export class WebAudio {
             }
         }
     }
+
     /**
-    * The pan of the audio.
-    *
-    * @type number
-    * @name WebAudio#pan
-    */
-    public get pan() {
+     * The pan of the audio.
+     *
+     * @type number
+     * @name WebAudio#pan
+     */
+    get pan() {
         return this._pan;
     }
-    public set pan(value) {
+    set pan(value) {
         this._pan = value;
         this._updatePanner();
     }
-
-    constructor(url: string) {
-        this.initialize(url);
+    constructor(...args: [string]) {
+        this.initialize(...args);
     }
 
     public initialize(url: string) {
         this.clear();
         this._url = url;
         this._startLoading();
-    };
+    }
 
     /**
      * Initializes the audio system.
@@ -126,17 +122,17 @@ export class WebAudio {
         this._createMasterGainNode();
         this._setupEventHandlers();
         return !!this._context;
-    };
+    }
 
     /**
      * Sets the master volume for all audio.
      *
      * @param {number} value - The master volume (0 to 1).
      */
-    static setMasterVolume(value: number) {
+    static setMasterVolume(value) {
         this._masterVolume = value;
         this._resetVolume();
-    };
+    }
 
     static _createContext() {
         try {
@@ -145,11 +141,11 @@ export class WebAudio {
         } catch (e) {
             this._context = null;
         }
-    };
+    }
 
     static _currentTime() {
         return this._context ? this._context.currentTime : 0;
-    };
+    }
 
     static _createMasterGainNode() {
         const context = this._context;
@@ -158,7 +154,7 @@ export class WebAudio {
             this._resetVolume();
             this._masterGainNode.connect(context.destination);
         }
-    };
+    }
 
     static _setupEventHandlers() {
         const onUserGesture = this._onUserGesture.bind(this);
@@ -167,14 +163,14 @@ export class WebAudio {
         document.addEventListener("mousedown", onUserGesture);
         document.addEventListener("touchend", onUserGesture);
         document.addEventListener("visibilitychange", onVisibilityChange);
-    };
+    }
 
     static _onUserGesture() {
         const context = this._context;
         if (context && context.state === "suspended") {
             context.resume();
         }
-    };
+    }
 
     static _onVisibilityChange() {
         if (document.visibilityState === "hidden") {
@@ -182,23 +178,23 @@ export class WebAudio {
         } else {
             this._onShow();
         }
-    };
+    }
 
     static _onHide() {
         if (this._shouldMuteOnHide()) {
             this._fadeOut(1);
         }
-    };
+    }
 
     static _onShow() {
         if (this._shouldMuteOnHide()) {
             this._fadeIn(1);
         }
-    };
+    }
 
     static _shouldMuteOnHide() {
         return Utils.isMobileDevice() && !window.navigator.standalone;
-    };
+    }
 
     static _resetVolume() {
         if (this._masterGainNode) {
@@ -207,9 +203,9 @@ export class WebAudio {
             const currentTime = this._currentTime();
             gain.setValueAtTime(volume, currentTime);
         }
-    };
+    }
 
-    static _fadeIn(duration: number) {
+    static _fadeIn(duration) {
         if (this._masterGainNode) {
             const gain = this._masterGainNode.gain;
             const volume = this._masterVolume;
@@ -217,9 +213,9 @@ export class WebAudio {
             gain.setValueAtTime(0, currentTime);
             gain.linearRampToValueAtTime(volume, currentTime + duration);
         }
-    };
+    }
 
-    static _fadeOut(duration: number) {
+    static _fadeOut(duration) {
         if (this._masterGainNode) {
             const gain = this._masterGainNode.gain;
             const volume = this._masterVolume;
@@ -227,7 +223,7 @@ export class WebAudio {
             gain.setValueAtTime(volume, currentTime);
             gain.linearRampToValueAtTime(0, currentTime + duration);
         }
-    };
+    }
 
     /**
      * Clears the audio data.
@@ -243,7 +239,7 @@ export class WebAudio {
         this._pannerNode = null;
         this._totalTime = 0;
         this._sampleRate = 0;
-        this._loop = false;
+        this._loop = 0;
         this._loopStart = 0;
         this._loopLength = 0;
         this._loopStartTime = 0;
@@ -260,7 +256,9 @@ export class WebAudio {
         this._isError = false;
         this._isPlaying = false;
         this._decoder = null;
-    };
+    }
+
+
 
     /**
      * Checks whether the audio data is ready to play.
@@ -269,7 +267,7 @@ export class WebAudio {
      */
     public isReady() {
         return this._buffers && this._buffers.length > 0;
-    };
+    }
 
     /**
      * Checks whether a loading error has occurred.
@@ -278,7 +276,7 @@ export class WebAudio {
      */
     public isError() {
         return this._isError;
-    };
+    }
 
     /**
      * Checks whether the audio is playing.
@@ -287,7 +285,7 @@ export class WebAudio {
      */
     public isPlaying() {
         return this._isPlaying;
-    };
+    }
 
     /**
      * Plays the audio.
@@ -295,7 +293,7 @@ export class WebAudio {
      * @param {boolean} loop - Whether the audio data play in a loop.
      * @param {number} offset - The start position to play in seconds.
      */
-    public play(loop: boolean, offset?: number) {
+    public play(loop, offset) {
         this._loop = loop;
         if (this.isReady()) {
             offset = offset || 0;
@@ -304,7 +302,7 @@ export class WebAudio {
             this.addLoadListener(() => this.play(loop, offset));
         }
         this._isPlaying = true;
-    };
+    }
 
     /**
      * Stops the audio.
@@ -320,7 +318,7 @@ export class WebAudio {
                 listner();
             }
         }
-    };
+    }
 
     /**
      * Destroys the audio.
@@ -328,14 +326,14 @@ export class WebAudio {
     public destroy() {
         this._destroyDecoder();
         this.clear();
-    };
+    }
 
     /**
      * Performs the audio fade-in.
      *
      * @param {number} duration - Fade-in time in seconds.
      */
-    public fadeIn(duration: number) {
+    public fadeIn(duration) {
         if (this.isReady()) {
             if (this._gainNode) {
                 const gain = this._gainNode.gain;
@@ -346,14 +344,14 @@ export class WebAudio {
         } else {
             this.addLoadListener(() => this.fadeIn(duration));
         }
-    };
+    }
 
     /**
      * Performs the audio fade-out.
      *
      * @param {number} duration - Fade-out time in seconds.
      */
-    public fadeOut(duration: number) {
+    public fadeOut(duration) {
         if (this._gainNode) {
             const gain = this._gainNode.gain;
             const currentTime = WebAudio._currentTime();
@@ -362,7 +360,7 @@ export class WebAudio {
         }
         this._isPlaying = false;
         this._loadListeners = [];
-    };
+    }
 
     /**
      * Gets the seek position of the audio.
@@ -379,25 +377,25 @@ export class WebAudio {
         } else {
             return 0;
         }
-    };
+    }
 
     /**
      * Adds a callback function that will be called when the audio data is loaded.
      *
      * @param {function} listner - The callback function.
      */
-    public addLoadListener(listner: Function) {
+    public addLoadListener(listner:Function) {
         this._loadListeners.push(listner);
-    };
+    }
 
     /**
      * Adds a callback function that will be called when the playback is stopped.
      *
      * @param {function} listner - The callback function.
      */
-    public addStopListener(listner: Function) {
+    public addStopListener(listner) {
         this._stopListeners.push(listner);
-    };
+    }
 
     /**
      * Tries to load the audio again.
@@ -407,7 +405,7 @@ export class WebAudio {
         if (this._isPlaying) {
             this.play(this._loop, 0);
         }
-    };
+    }
 
     public _startLoading() {
         if (WebAudio._context) {
@@ -426,11 +424,11 @@ export class WebAudio {
                 this._createDecoder();
             }
         }
-    };
+    }
 
     public _shouldUseDecoder() {
         return !Utils.canPlayOgg() && typeof VorbisDecoder === "function";
-    };
+    }
 
     public _createDecoder() {
         this._decoder = new VorbisDecoder(
@@ -438,36 +436,36 @@ export class WebAudio {
             this._onDecode.bind(this),
             this._onError.bind(this)
         );
-    };
+    }
 
     public _destroyDecoder() {
         if (this._decoder) {
             this._decoder.destroy();
             this._decoder = null;
         }
-    };
+    }
 
     public _realUrl() {
         return this._url + (Utils.hasEncryptedAudio() ? "_" : "");
-    };
+    }
 
-    public _startXhrLoading(url: string) {
+    public _startXhrLoading(url) {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", url);
         xhr.responseType = "arraybuffer";
         xhr.onload = () => this._onXhrLoad(xhr);
         xhr.onerror = this._onError.bind(this);
         xhr.send();
-    };
+    }
 
-    public _startFetching(url: string) {
-        const options: RequestInit = { credentials: "same-origin" };
+    public _startFetching(url) {
+        const options:RequestInit = { credentials: "same-origin" }
         fetch(url, options)
             .then(response => this._onFetch(response))
             .catch(() => this._onError());
-    };
+    }
 
-    public _onXhrLoad(xhr: XMLHttpRequest) {
+    public _onXhrLoad(xhr) {
         if (xhr.status < 400) {
             this._data = new Uint8Array(xhr.response);
             this._isLoaded = true;
@@ -475,12 +473,12 @@ export class WebAudio {
         } else {
             this._onError();
         }
-    };
+    }
 
-    public _onFetch(response: Response) {
+    public _onFetch(response) {
         if (response.ok) {
             const reader = response.body.getReader();
-            const readChunk = ({ done, value }: ReadableStreamDefaultReadResult<Uint8Array>) => {
+            const readChunk = ({ done, value }) => {
                 if (done) {
                     this._isLoaded = true;
                     if (this._fetchedSize > 0) {
@@ -493,7 +491,7 @@ export class WebAudio {
                     this._onFetchProcess(value);
                     return reader.read().then(readChunk);
                 }
-            };
+            }
             reader
                 .read()
                 .then(readChunk)
@@ -501,7 +499,7 @@ export class WebAudio {
         } else {
             this._onError();
         }
-    };
+    }
 
     public _onError() {
         if (this._sourceNodes.length > 0) {
@@ -509,13 +507,13 @@ export class WebAudio {
         }
         this._data = null;
         this._isError = true;
-    };
+    }
 
-    public _onFetchProcess(value: Uint8Array) {
+    public _onFetchProcess(value:Uint8Array) {
         this._fetchedSize += value.length;
         this._fetchedData.push(value);
         this._updateBufferOnFetch();
-    };
+    }
 
     public _updateBufferOnFetch() {
         const currentTime = WebAudio._currentTime();
@@ -527,7 +525,7 @@ export class WebAudio {
             this._updateBuffer();
             this._lastUpdateTime = currentTime;
         }
-    };
+    }
 
     public _concatenateFetchedData() {
         const currentData = this._data;
@@ -545,13 +543,13 @@ export class WebAudio {
         this._data = newData;
         this._fetchedData = [];
         this._fetchedSize = 0;
-    };
+    }
 
     public _updateBuffer() {
         const arrayBuffer = this._readableBuffer();
         this._readLoopComments(arrayBuffer);
         this._decodeAudioData(arrayBuffer);
-    };
+    }
 
     public _readableBuffer() {
         if (Utils.hasEncryptedAudio()) {
@@ -559,9 +557,9 @@ export class WebAudio {
         } else {
             return this._data.buffer;
         }
-    };
+    }
 
-    public _decodeAudioData(arrayBuffer:ArrayBuffer) {
+    public _decodeAudioData(arrayBuffer) {
         if (this._shouldUseDecoder()) {
             if (this._decoder) {
                 this._decoder.send(arrayBuffer, this._isLoaded);
@@ -570,15 +568,13 @@ export class WebAudio {
             // [Note] Make a temporary copy of arrayBuffer because
             //   decodeAudioData() detaches it.
             WebAudio._context
-                //不标准语法
-                // .decodeAudioData(arrayBuffer.slice())
-                .decodeAudioData(arrayBuffer.slice(0))
+                .decodeAudioData(arrayBuffer.slice())
                 .then(buffer => this._onDecode(buffer))
                 .catch(() => this._onError());
         }
-    };
+    }
 
-    public _onDecode(buffer: AudioBuffer) {
+    public _onDecode(buffer:AudioBuffer) {
         if (!this._shouldUseDecoder()) {
             this._buffers = [];
             this._totalTime = 0;
@@ -596,7 +592,7 @@ export class WebAudio {
             this._refreshSourceNode();
         }
         this._onLoad();
-    };
+    }
 
     public _refreshSourceNode() {
         if (this._shouldUseDecoder()) {
@@ -616,9 +612,9 @@ export class WebAudio {
             this._removeEndTimer();
             this._createEndTimer();
         }
-    };
+    }
 
-    public _startPlaying(offset:number) {
+    public _startPlaying(offset) {
         if (this._loopLengthTime > 0) {
             while (offset >= this._loopStartTime + this._loopLengthTime) {
                 offset -= this._loopLengthTime;
@@ -632,15 +628,15 @@ export class WebAudio {
         this._createAllSourceNodes();
         this._startAllSourceNodes();
         this._createEndTimer();
-    };
+    }
 
     public _startAllSourceNodes() {
         for (let i = 0; i < this._sourceNodes.length; i++) {
             this._startSourceNode(i);
         }
-    };
+    }
 
-    public _startSourceNode(index:number) {
+    public _startSourceNode(index) {
         const sourceNode = this._sourceNodes[index];
         const seekPos = this.seek();
         const currentTime = WebAudio._currentTime();
@@ -684,7 +680,7 @@ export class WebAudio {
                     sourceNode.onended = () => {
                         this._createSourceNode(index);
                         this._startSourceNode(index);
-                    };
+                    }
                 }
             }
         } else {
@@ -693,7 +689,7 @@ export class WebAudio {
             }
         }
         chunkStart += sourceNode.buffer.duration;
-    };
+    }
 
     public _stopSourceNode() {
         for (const sourceNode of this._sourceNodes) {
@@ -704,29 +700,29 @@ export class WebAudio {
                 // Ignore InvalidStateError
             }
         }
-    };
+    }
 
     public _createPannerNode() {
         this._pannerNode = WebAudio._context.createPanner();
         this._pannerNode.panningModel = "equalpower";
         this._pannerNode.connect(WebAudio._masterGainNode);
         this._updatePanner();
-    };
+    }
 
     public _createGainNode() {
         const currentTime = WebAudio._currentTime();
         this._gainNode = WebAudio._context.createGain();
         this._gainNode.gain.setValueAtTime(this._volume, currentTime);
         this._gainNode.connect(this._pannerNode);
-    };
+    }
 
     public _createAllSourceNodes() {
         for (let i = 0; i < this._buffers.length; i++) {
             this._createSourceNode(i);
         }
-    };
+    }
 
-    public _createSourceNode(index:number) {
+    public _createSourceNode(index) {
         const sourceNode = WebAudio._context.createBufferSource();
         const currentTime = WebAudio._currentTime();
         sourceNode.buffer = this._buffers[index];
@@ -736,7 +732,7 @@ export class WebAudio {
         sourceNode.playbackRate.setValueAtTime(this._pitch, currentTime);
         sourceNode.connect(this._gainNode);
         this._sourceNodes[index] = sourceNode;
-    };
+    }
 
     public _removeNodes() {
         if (this._sourceNodes && this._sourceNodes.length > 0) {
@@ -745,7 +741,7 @@ export class WebAudio {
             this._gainNode = null;
             this._pannerNode = null;
         }
-    };
+    }
 
     public _createEndTimer() {
         if (this._sourceNodes.length > 0 && !this._loop) {
@@ -753,14 +749,14 @@ export class WebAudio {
             const delay = endTime - WebAudio._currentTime();
             this._endTimer = setTimeout(this.stop.bind(this), delay * 1000);
         }
-    };
+    }
 
     public _removeEndTimer() {
         if (this._endTimer) {
             clearTimeout(this._endTimer);
             this._endTimer = null;
         }
-    };
+    }
 
     public _updatePanner() {
         if (this._pannerNode) {
@@ -768,16 +764,16 @@ export class WebAudio {
             const z = 1 - Math.abs(x);
             this._pannerNode.setPosition(x, 0, z);
         }
-    };
+    }
 
     public _onLoad() {
         while (this._loadListeners.length > 0) {
             const listner = this._loadListeners.shift();
             listner();
         }
-    };
+    }
 
-    public _readLoopComments(arrayBuffer:ArrayBuffer) {
+    public _readLoopComments(arrayBuffer) {
         const view = new DataView(arrayBuffer);
         let index = 0;
         while (index < view.byteLength - 30) {
@@ -816,9 +812,9 @@ export class WebAudio {
                 break;
             }
         }
-    };
+    }
 
-    public _readMetaData(view:DataView, index:number, size:number) {
+    public _readMetaData(view, index, size) {
         for (let i = index; i < index + size - 10; i++) {
             if (this._readFourCharacters(view, i) === "LOOP") {
                 let text = "";
@@ -845,9 +841,9 @@ export class WebAudio {
                 }
             }
         }
-    };
+    }
 
-    public _readFourCharacters(view:DataView, index:number) {
+    public _readFourCharacters(view, index) {
         let string = "";
         if (index <= view.byteLength - 4) {
             for (let i = 0; i < 4; i++) {
@@ -855,5 +851,6 @@ export class WebAudio {
             }
         }
         return string;
-    };
+    }
+
 }

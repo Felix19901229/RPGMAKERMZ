@@ -1,4 +1,9 @@
 import { Game_Item } from "./index.js";
+
+type Game_BattlerBase=any;
+type Game_Actor=any;
+type Subject=Game_BattlerBase|Game_Actor;
+declare const DataManager:any;
 //-----------------------------------------------------------------------------
 /**
  * Game_Action
@@ -25,17 +30,17 @@ export class Game_Action {
     static HITTYPE_MAGICAL = 2;
     _subjectActorId: number;
     _subjectEnemyIndex: number;
-    _forcing: boolean;
-    _item: Game_Item;
+    _forcing: any;
+    _item: any;
     _targetIndex: number;
-    constructor(subject, forcing: boolean = false) {
-        this.initialize(subject, forcing);
-
+    _reflectionTarget: any;
+    constructor(...args: [Subject,boolean?]) {
+        this.initialize(...args);
     }
-    public initialize(subject, forcing: boolean = false) {
+    public initialize(subject, forcing:boolean=false) {
         this._subjectActorId = 0;
         this._subjectEnemyIndex = -1;
-        this._forcing = forcing;
+        this._forcing = forcing ;
         this.setSubject(subject);
         this.clear();
     };
@@ -45,7 +50,7 @@ export class Game_Action {
         this._targetIndex = -1;
     };
 
-    public setSubject(subject:Game_Battler) {
+    public setSubject(subject) {
         if (subject.isActor()) {
             this._subjectActorId = subject.actorId();
             this._subjectEnemyIndex = -1;
@@ -493,7 +498,7 @@ export class Game_Action {
         }
     };
 
-    public itemHit(/*target*/) {
+    public itemHit(...args /*target*/) {
         const successRate = this.item().successRate;
         if (this.isPhysical()) {
             return successRate * 0.01 * this.subject().hit;
@@ -566,14 +571,17 @@ export class Game_Action {
     public evalDamageFormula(target) {
         try {
             const item = this.item();
-            const a = this.subject(); // eslint-disable-line no-unused-vars
-            const b = target; // eslint-disable-line no-unused-vars
-            const v = $gameVariables._data; // eslint-disable-line no-unused-vars
+            //@ts-ignore
+            const a = this.subject();
+            //@ts-ignore
+            const b = target;
+            //@ts-ignore
+            const v = $gameVariables._data;
             const sign = [3, 4].includes(item.damage.type) ? -1 : 1;
             const value = Math.max(eval(item.damage.formula), 0) * sign;
             return isNaN(value) ? 0 : value;
         } catch (e) {
-            return 0;  
+            return 0;
         }
     };
 
@@ -827,7 +835,7 @@ export class Game_Action {
         }
     };
 
-    public itemEffectCommonEvent(target, effect) {
+    public itemEffectCommonEvent(...args /*target, effect*/) {
         //
     };
 
@@ -835,7 +843,7 @@ export class Game_Action {
         target.result().success = true;
     };
 
-    public applyItemUserEffect(/*target*/) {
+    public applyItemUserEffect(...args/*target*/) {
         const value = Math.floor(this.item().tpGain * this.subject().tcr);
         this.subject().gainSilentTp(value);
     };
@@ -879,7 +887,6 @@ export class Game_Action {
             $gameTemp.setLastTargetEnemyIndex(target.index() + 1);
         }
     };
+
 }
-
-
 

@@ -5,46 +5,45 @@
  * @namespace
  */
 export class Input {
-    static _dir4: number;
-    static _dir8: number;
     static _date: number;
-    static _currentState: AnyObject;
-    static _previousState: AnyObject;
-    static _gamepadStates: AnyObject[];
-    static _latestButton: Nullable<string>;
+    static _dir8: number;
+    static _dir4: number;
     static _pressedTime: number;
     static _preferredAxis: string;
+    static _latestButton: string;
+    static _currentState: { [name: string]: boolean; }
+    static _previousState:{ [name: string]: boolean; }
+    static _gamepadStates: boolean[][];
     static _virtualButton: string;
-
     /**
      * The four direction value as a number of the numpad, or 0 for neutral.
      *
      * @readonly
      * @type number
-     * @name Input.dir4
+     * @name static dir4
      */
     static get dir4() {
         return this._dir4;
     }
 
     /**
-    * The eight direction value as a number of the numpad, or 0 for neutral.
-    *
-    * @readonly
-    * @type number
-    * @name Input.dir8
-    */
+     * The eight direction value as a number of the numpad, or 0 for neutral.
+     *
+     * @readonly
+     * @type number
+     * @name static dir8
+     */
     static get dir8() {
         return this._dir8;
     }
 
     /**
-    * The time of the last input in milliseconds.
-    *
-    * @readonly
-    * @type number
-    * @name Input.date
-    */
+     * The time of the last input in milliseconds.
+     *
+     * @readonly
+     * @type number
+     * @name static date
+     */
     static get date() {
         return this._date;
     }
@@ -52,13 +51,14 @@ export class Input {
     constructor() {
         throw new Error("This is a static class");
     }
+
     /**
      * Initializes the input system.
      */
     static initialize() {
         this.clear();
         this._setupEventHandlers();
-    };
+    }
 
     /**
      * The wait time of the key repeat in frames.
@@ -80,31 +80,31 @@ export class Input {
      * @type Object
      */
     static keyMapper = {
-        "Tab": "tab", // tab
-        "Enter": "ok", // enter
-        "Shift": "shift", // shift
-        "Control": "control", // control
-        "Alt": "control", // alt
-        "Escape": "escape", // escape
-        "Space": "ok", // space
-        "PageUp": "pageup", // pageup
-        "PageDown": "pagedown", // pagedown
-        "ArrowLeft": "left", // left arrow
-        "ArrowUp": "up", // up arrow
-        "ArrowRight": "right", // right arrow
-        "ArrowDown": "down", // down arrow
-        "Insert": "escape", // insert
-        "KeyQ": "pageup", // Q
-        "KeyW": "pagedown", // W
-        "KeyX": "escape", // X
-        "KeyZ": "ok", // Z
-        "Digit0": "escape", // numpad 0
-        "Digit2": "down", // numpad 2
-        "Digit4": "left", // numpad 4
-        "Digit6": "right", // numpad 6
-        "Digit8": "up", // numpad 8
-        "F9": "debug" // F9
-    };
+        9: "tab", // tab
+        13: "ok", // enter
+        16: "shift", // shift
+        17: "control", // control
+        18: "control", // alt
+        27: "escape", // escape
+        32: "ok", // space
+        33: "pageup", // pageup
+        34: "pagedown", // pagedown
+        37: "left", // left arrow
+        38: "up", // up arrow
+        39: "right", // right arrow
+        40: "down", // down arrow
+        45: "escape", // insert
+        81: "pageup", // Q
+        87: "pagedown", // W
+        88: "escape", // X
+        90: "ok", // Z
+        96: "escape", // numpad 0
+        98: "down", // numpad 2
+        100: "left", // numpad 4
+        102: "right", // numpad 6
+        104: "up", // numpad 8
+        120: "debug" // F9
+    }
 
     /**
      * A hash table to convert from a gamepad button to a mapped key name.
@@ -122,14 +122,14 @@ export class Input {
         13: "down", // D-pad down
         14: "left", // D-pad left
         15: "right" // D-pad right
-    };
+    }
 
     /**
      * Clears all the input data.
      */
     static clear() {
-        this._currentState = {};
-        this._previousState = {};
+        this._currentState = {}
+        this._previousState = {}
         this._gamepadStates = [];
         this._latestButton = null;
         this._pressedTime = 0;
@@ -138,7 +138,7 @@ export class Input {
         this._preferredAxis = "";
         this._date = 0;
         this._virtualButton = null;
-    };
+    }
 
     /**
      * Updates the input data.
@@ -164,7 +164,7 @@ export class Input {
             this._virtualButton = null;
         }
         this._updateDirection();
-    };
+    }
 
     /**
      * Checks whether a key is currently pressed down.
@@ -172,13 +172,13 @@ export class Input {
      * @param {string} keyName - The mapped name of the key.
      * @returns {boolean} True if the key is pressed.
      */
-    static isPressed(keyName: string) {
+    static isPressed(keyName) {
         if (this._isEscapeCompatible(keyName) && this.isPressed("escape")) {
             return true;
         } else {
             return !!this._currentState[keyName];
         }
-    };
+    }
 
     /**
      * Checks whether a key is just pressed.
@@ -186,13 +186,13 @@ export class Input {
      * @param {string} keyName - The mapped name of the key.
      * @returns {boolean} True if the key is triggered.
      */
-    static isTriggered(keyName: string) {
+    static isTriggered(keyName) {
         if (this._isEscapeCompatible(keyName) && this.isTriggered("escape")) {
             return true;
         } else {
             return this._latestButton === keyName && this._pressedTime === 0;
         }
-    };
+    }
 
     /**
      * Checks whether a key is just pressed or a key repeat occurred.
@@ -200,7 +200,7 @@ export class Input {
      * @param {string} keyName - The mapped name of the key.
      * @returns {boolean} True if the key is repeated.
      */
-    static isRepeated(keyName: string) {
+    static isRepeated(keyName) {
         if (this._isEscapeCompatible(keyName) && this.isRepeated("escape")) {
             return true;
         } else {
@@ -211,7 +211,7 @@ export class Input {
                         this._pressedTime % this.keyRepeatInterval === 0))
             );
         }
-    };
+    }
 
     /**
      * Checks whether a key is kept depressed.
@@ -219,7 +219,7 @@ export class Input {
      * @param {string} keyName - The mapped name of the key.
      * @returns {boolean} True if the key is long-pressed.
      */
-    static isLongPressed(keyName: string) {
+    static isLongPressed(keyName) {
         if (this._isEscapeCompatible(keyName) && this.isLongPressed("escape")) {
             return true;
         } else {
@@ -228,78 +228,57 @@ export class Input {
                 this._pressedTime >= this.keyRepeatWait
             );
         }
-    };
+    }
 
-    static virtualClick(buttonName: string) {
+    static virtualClick(buttonName) {
         this._virtualButton = buttonName;
-    };
+    }
 
     static _setupEventHandlers() {
         document.addEventListener("keydown", this._onKeyDown.bind(this));
         document.addEventListener("keyup", this._onKeyUp.bind(this));
         window.addEventListener("blur", this._onLostFocus.bind(this));
-    };
+    }
 
-    static _onKeyDown(event: KeyboardEvent) {
-        // keyCode不是标准输入
-        // if (this._shouldPreventDefault(event.keyCode)) {
-        //     event.preventDefault();
-        // }
-        if (this._shouldPreventDefault(event.code)) {
+    static _onKeyDown(event) {
+        if (this._shouldPreventDefault(event.keyCode)) {
             event.preventDefault();
         }
         if (event.keyCode === 144) {
             // Numlock
             this.clear();
         }
-        // keyCode不是标准输入
-        // const buttonName = this.keyMapper[event.keyCode];
-        const buttonName = this.keyMapper[event.code];
+        const buttonName = this.keyMapper[event.keyCode];
         if (buttonName) {
             this._currentState[buttonName] = true;
         }
-    };
-    // keyCode不是标准输入
-    // static _shouldPreventDefault(keyCode) {
-    //     switch (keyCode) {
-    //         case 8: // backspace
-    //         case 9: // tab
-    //         case 33: // pageup
-    //         case 34: // pagedown
-    //         case 37: // left arrow
-    //         case 38: // up arrow
-    //         case 39: // right arrow
-    //         case 40: // down arrow
-    //             return true;
-    //     }
-    //     return false;
-    // };
-    static _shouldPreventDefault(key:string) {
-        switch (key) {
-            case "Backspace": // backspace
-            case "Tab": // tab
-            case "PageUp": // pageup
-            case "PageDown": // pagedown
-            case "ArrowLeft": // left arrow
-            case "ArrowUp": // up arrow
-            case "ArrowRight": // right arrow
-            case "ArrowDown": // down arrow
+    }
+
+    static _shouldPreventDefault(keyCode) {
+        switch (keyCode) {
+            case 8: // backspace
+            case 9: // tab
+            case 33: // pageup
+            case 34: // pagedown
+            case 37: // left arrow
+            case 38: // up arrow
+            case 39: // right arrow
+            case 40: // down arrow
                 return true;
         }
         return false;
-    };
-    static _onKeyUp(event:KeyboardEvent) {
-        // const buttonName = this.keyMapper[event.keyCode];
-        const buttonName = this.keyMapper[event.code];
+    }
 
+    static _onKeyUp(event) {
+        const buttonName = this.keyMapper[event.keyCode];
         if (buttonName) {
             this._currentState[buttonName] = false;
         }
-    };
+    }
 
     static _onLostFocus() {
         this.clear();
-    };
+    }
 
     static _pollGamepads() {
         if (navigator.getGamepads) {
@@ -312,9 +291,9 @@ export class Input {
                 }
             }
         }
-    };
+    }
 
-    static _updateGamepadState(gamepad:Gamepad) {
+    static _updateGamepadState(gamepad) {
         const lastState = this._gamepadStates[gamepad.index] || [];
         const newState = [];
         const buttons = gamepad.buttons;
@@ -346,7 +325,7 @@ export class Input {
             }
         }
         this._gamepadStates[gamepad.index] = newState;
-    };
+    }
 
     static _updateDirection() {
         let x = this._signX();
@@ -364,19 +343,19 @@ export class Input {
             this._preferredAxis = "x";
         }
         this._dir4 = this._makeNumpadDirection(x, y);
-    };
+    }
 
     static _signX() {
         const left = this.isPressed("left") ? 1 : 0;
         const right = this.isPressed("right") ? 1 : 0;
         return right - left;
-    };
+    }
 
     static _signY() {
         const up = this.isPressed("up") ? 1 : 0;
         const down = this.isPressed("down") ? 1 : 0;
         return down - up;
-    };
+    }
 
     static _makeNumpadDirection(x, y) {
         if (x === 0 && y === 0) {
@@ -384,11 +363,10 @@ export class Input {
         } else {
             return 5 - y * 3 + x;
         }
-    };
+    }
 
-    static _isEscapeCompatible(keyName:string) {
+    static _isEscapeCompatible(keyName) {
         return keyName === "cancel" || keyName === "menu";
-    };
+    }
 
 }
-

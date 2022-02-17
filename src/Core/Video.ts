@@ -6,28 +6,27 @@ import { Graphics } from "./index.js";
  * @namespace
  */
 export class Video {
-    static _element:Nullable<HTMLVideoElement> = null;
-    static _loading = false;
-    static _volume = 1;
-
-
+    static _volume: number;
+    static _loading: boolean;
+    static _element: Nullable<HTMLVideoElement>;
     constructor() {
         throw new Error("This is a static class");
     }
+
     /**
      * Initializes the video system.
      *
      * @param {number} width - The width of the video.
      * @param {number} height - The height of the video.
      */
-    static initialize(width:number, height:number) {
+    static initialize(width, height) {
         this._element = null;
         this._loading = false;
         this._volume = 1;
         this._createElement();
         this._setupEventHandlers();
         this.resize(width, height);
-    };
+    }
 
     /**
      * Changes the display size of the video.
@@ -35,26 +34,26 @@ export class Video {
      * @param {number} width - The width of the video.
      * @param {number} height - The height of the video.
      */
-    static resize(width:number, height:number) {
+    static resize(width, height) {
         if (this._element) {
             this._element.style.width = width + "px";
             this._element.style.height = height + "px";
         }
-    };
+    }
 
     /**
      * Starts playback of a video.
      *
      * @param {string} src - The url of the video.
      */
-    static play(src:string) {
+    static play(src) {
         this._element.src = src;
         this._element.onloadeddata = this._onLoad.bind(this);
         this._element.onerror = this._onError.bind(this);
         this._element.onended = this._onEnd.bind(this);
         this._element.load();
         this._loading = true;
-    };
+    }
 
     /**
      * Checks whether the video is playing.
@@ -63,7 +62,7 @@ export class Video {
      */
     static isPlaying() {
         return this._loading || this._isVisible();
-    };
+    }
 
     /**
      * Sets the volume for videos.
@@ -75,7 +74,7 @@ export class Video {
         if (this._element) {
             this._element.volume = this._volume;
         }
-    };
+    }
 
     static _createElement() {
         this._element = document.createElement("video");
@@ -91,50 +90,50 @@ export class Video {
         this._element.setAttribute("playsinline", "");
         this._element.oncontextmenu = () => false;
         document.body.appendChild(this._element);
-    };
+    }
 
     static _onLoad() {
         this._element.volume = this._volume;
         this._element.play();
         this._updateVisibility(true);
         this._loading = false;
-    };
+    }
 
     static _onError() {
         this._updateVisibility(false);
         const retry = () => {
             this._element.load();
-        };
+        }
         throw ["LoadError", this._element.src, retry];
-    };
+    }
 
     static _onEnd() {
         this._updateVisibility(false);
-    };
+    }
 
-    static _updateVisibility(videoVisible:boolean) {
+    static _updateVisibility(videoVisible) {
         if (videoVisible) {
             Graphics.hideScreen();
         } else {
             Graphics.showScreen();
         }
-        this._element.style.opacity = videoVisible ? "1" : "0";
-    };
+        this._element.style.opacity =  videoVisible ? "1" : "0";
+    }
 
     static _isVisible() {
         return Number(this._element.style.opacity) > 0;
-    };
+    }
 
     static _setupEventHandlers() {
         const onUserGesture = this._onUserGesture.bind(this);
         document.addEventListener("keydown", onUserGesture);
         document.addEventListener("mousedown", onUserGesture);
         document.addEventListener("touchend", onUserGesture);
-    };
+    }
 
     static _onUserGesture() {
         if (!this._element.src && this._element.paused) {
             this._element.play().catch(() => 0);
         }
-    };
+    }
 }

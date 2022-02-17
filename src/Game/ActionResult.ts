@@ -11,21 +11,22 @@ export class Game_ActionResult {
     evaded: boolean;
     physical: boolean;
     drain: boolean;
-    success: boolean;
     critical: boolean;
+    success: boolean;
     hpAffected: boolean;
     hpDamage: number;
     mpDamage: number;
     tpDamage: number;
-    removedStates: number[];
     addedStates: number[];
-    addedBuffs: null[];
-    addedDebuffs: null[];
-    removedBuffs: null[];
-    constructor() {
-        this.initialize();
+    removedStates: number[];
+    addedBuffs: number[];
+    addedDebuffs: number[];
+    removedBuffs: number[];
+    constructor(...args: any[]) {
+        this.initialize(...args);
     }
-    public initialize() {
+
+    public initialize(...args) {
         this.clear();
     };
 

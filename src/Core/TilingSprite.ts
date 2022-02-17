@@ -9,54 +9,46 @@ import { Bitmap, Point, Rectangle } from "./index.js";
  */
 export class TilingSprite extends PIXI.TilingSprite {
     static _emptyBaseTexture: Nullable<PIXI.BaseTexture> = null;
-    // ES6不支持
-    // static {
-    //     TilingSprite._emptyBaseTexture = new PIXI.BaseTexture();
-    //     TilingSprite._emptyBaseTexture.setSize(1, 1);
-    // }
-
-    public _bitmap: Nullable<Bitmap>;
-    public _width: number;
-    public _height: number;
-    public _frame: Rectangle;
-    /**
-     * The origin point of the tiling sprite for scrolling.
-     *
-     * @type Point
-     */
-    public origin: Point;
-    public children: TilingSprite[] = [];
+    _width: number;
+    _bitmap: Bitmap;
+    _height: number;
+    _frame: Rectangle;
+    origin: Point;
+    children: TilingSprite[]=[];
     /**
      * The image for the tiling sprite.
      *
      * @type Bitmap
      * @name TilingSprite#bitmap
      */
-    public get bitmap() {
+    get bitmap() {
         return this._bitmap;
     }
-    public set bitmap(value) {
+    set bitmap(value) {
         if (this._bitmap !== value) {
             this._bitmap = value;
             this._onBitmapChange();
         }
     }
+
     /**
-     * The opacity of the tiling sprite (0 to 255).
-     *
-     * @type number
-     * @name TilingSprite#opacity
-     */
-    public get opacity() {
+    * The opacity of the tiling sprite (0 to 255).
+    *
+    * @type number
+    * @name TilingSprite#opacity
+    */
+    get opacity() {
         return this.alpha * 255;
     }
-    public set opacity(value) {
+    set opacity(value) {
         this.alpha = value.clamp(0, 255) / 255;
     }
-    constructor(bitmap?: Bitmap, width?: number, height?: number) {
-        super(new PIXI.Texture(new PIXI.BaseTexture()), width, height);
-        this.initialize(bitmap);
+
+    constructor(...args: [Bitmap?]) {
+        super(new PIXI.Texture(new PIXI.BaseTexture()));
+        this.initialize(...args);
     }
+
     public initialize(bitmap?: Bitmap) {
         if (!TilingSprite._emptyBaseTexture) {
             TilingSprite._emptyBaseTexture = new PIXI.BaseTexture();
@@ -69,16 +61,27 @@ export class TilingSprite extends PIXI.TilingSprite {
         this._width = 0;
         this._height = 0;
         this._frame = frame;
+
+        /**
+         * The origin point of the tiling sprite for scrolling.
+         *
+         * @type Point
+         */
         this.origin = new Point();
+
         this._onBitmapChange();
-    };
+    }
+
+
+
+
     /**
      * Destroys the tiling sprite.
      */
     public destroy() {
-        const options = { children: true, texture: true };
+        const options = { children: true, texture: true }
         PIXI.TilingSprite.prototype.destroy.call(this, options);
-    };
+    }
 
     /**
      * Updates the tiling sprite for each frame.
@@ -89,7 +92,7 @@ export class TilingSprite extends PIXI.TilingSprite {
                 child.update();
             }
         }
-    };
+    }
 
     /**
      * Sets the x, y, width, and height all at once.
@@ -104,7 +107,7 @@ export class TilingSprite extends PIXI.TilingSprite {
         this.y = y;
         this._width = width;
         this._height = height;
-    };
+    }
 
     /**
      * Specifies the region of the image that the tiling sprite will use.
@@ -114,13 +117,13 @@ export class TilingSprite extends PIXI.TilingSprite {
      * @param {number} width - The width of the frame.
      * @param {number} height - The height of the frame.
      */
-    public setFrame(x: number, y: number, width: number, height: number) {
+    public setFrame(x, y, width, height) {
         this._frame.x = x;
         this._frame.y = y;
         this._frame.width = width;
         this._frame.height = height;
         this._refresh();
-    };
+    }
 
     /**
      * Updates the transform on all children of this container for rendering.
@@ -129,7 +132,7 @@ export class TilingSprite extends PIXI.TilingSprite {
         this.tilePosition.x = Math.round(-this.origin.x);
         this.tilePosition.y = Math.round(-this.origin.y);
         PIXI.TilingSprite.prototype.updateTransform.call(this);
-    };
+    }
 
     public _onBitmapChange() {
         if (this._bitmap) {
@@ -137,12 +140,12 @@ export class TilingSprite extends PIXI.TilingSprite {
         } else {
             this.texture.frame = new Rectangle();
         }
-    };
+    }
 
     public _onBitmapLoad() {
         this.texture.baseTexture = this._bitmap.baseTexture;
         this._refresh();
-    };
+    }
 
     public _refresh() {
         const texture = this.texture;
@@ -159,7 +162,12 @@ export class TilingSprite extends PIXI.TilingSprite {
                     texture.frame = new Rectangle();
                 }
             }
-            (texture as any)._updateID++;
+            //@ts-ignore
+            texture._updateID++;
         }
-    };
+    }
+
 }
+
+// TilingSprite.prototype = Object.create(PIXI.TilingSprite.prototype);
+// public constructor = TilingSprite;
