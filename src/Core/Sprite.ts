@@ -1,5 +1,4 @@
-import { Bitmap, Rectangle } from "./index.js";
-declare var ColorFilter: any;
+import { Bitmap, ColorFilter, Rectangle } from "./index.js";
 //-----------------------------------------------------------------------------
 /**
  * The basic object that is rendered to the game screen.
@@ -24,6 +23,9 @@ export class Sprite extends PIXI.Sprite {
     _refreshFrame: boolean;
     ax:number;
     ay:number;
+    dy: number;
+    ry: number;
+    z:number;
     /**
      * The image for the sprite.
      *
@@ -137,7 +139,7 @@ export class Sprite extends PIXI.Sprite {
     /**
      * Destroys the sprite.
      */
-    public destroy() {
+    public destroy(...args:any[]) {
         const options = { children: true, texture: true }
         PIXI.Sprite.prototype.destroy.call(this, options);
     }

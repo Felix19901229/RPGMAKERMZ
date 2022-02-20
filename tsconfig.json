@@ -14,13 +14,14 @@
     "types": [
       "./typings",
       "node",
-      "pako"
+      "pako",
+      "chrome"
     ],
     "lib": [
       "ES2017",
       "DOM",
       "DOM.Iterable"
-    ],
+        ],
     "declaration": false,
     "removeComments": true,
     "emitDecoratorMetadata": true,

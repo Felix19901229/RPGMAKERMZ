@@ -36,7 +36,7 @@ export class Game_Battler extends Game_BattlerBase {
     }
     public initialize(...args) {
         Game_BattlerBase.prototype.initialize.call(this);
-    };
+    }
 
     public initMembers() {
         Game_BattlerBase.prototype.initMembers.call(this);
@@ -57,84 +57,84 @@ export class Game_Battler extends Game_BattlerBase {
         this._tpbIdleTime = 0;
         this._tpbTurnCount = 0;
         this._tpbTurnEnd = false;
-    };
+    }
 
     public clearDamagePopup() {
         this._damagePopup = false;
-    };
+    }
 
     public clearWeaponAnimation() {
         this._weaponImageId = 0;
-    };
+    }
 
     public clearEffect() {
         this._effectType = null;
-    };
+    }
 
     public clearMotion() {
         this._motionType = null;
         this._motionRefresh = false;
-    };
+    }
 
     public requestEffect(effectType) {
         this._effectType = effectType;
-    };
+    }
 
     public requestMotion(motionType) {
         this._motionType = motionType;
-    };
+    }
 
     public requestMotionRefresh() {
         this._motionRefresh = true;
-    };
+    }
 
     public select() {
         this._selected = true;
-    };
+    }
 
     public deselect() {
         this._selected = false;
-    };
+    }
 
     public isDamagePopupRequested() {
         return this._damagePopup;
-    };
+    }
 
     public isEffectRequested() {
         return !!this._effectType;
-    };
+    }
 
     public isMotionRequested() {
         return !!this._motionType;
-    };
+    }
 
     public isWeaponAnimationRequested() {
         return this._weaponImageId > 0;
-    };
+    }
 
     public isMotionRefreshRequested() {
         return this._motionRefresh;
-    };
+    }
 
     public isSelected() {
         return this._selected;
-    };
+    }
 
     public effectType() {
         return this._effectType;
-    };
+    }
 
     public motionType() {
         return this._motionType;
-    };
+    }
 
     public weaponImageId() {
         return this._weaponImageId;
-    };
+    }
 
     public startDamagePopup() {
         this._damagePopup = true;
-    };
+    }
 
     public shouldPopupDamage() {
         const result = this._result;
@@ -144,45 +144,45 @@ export class Game_Battler extends Game_BattlerBase {
             result.hpAffected ||
             result.mpDamage !== 0
         );
-    };
+    }
 
     public startWeaponAnimation(weaponImageId) {
         this._weaponImageId = weaponImageId;
-    };
+    }
 
     public action(index) {
         return this._actions[index];
-    };
+    }
 
     public setAction(index, action) {
         this._actions[index] = action;
-    };
+    }
 
     public numActions() {
         return this._actions.length;
-    };
+    }
 
     public clearActions() {
         this._actions = [];
-    };
+    }
 
     public result() {
         return this._result;
-    };
+    }
 
     public clearResult() {
         this._result.clear();
-    };
+    }
 
     public clearTpbChargeTime() {
         this._tpbState = "charging";
         this._tpbChargeTime = 0;
-    };
+    }
 
     public applyTpbPenalty() {
         this._tpbState = "charging";
         this._tpbChargeTime -= 1;
-    };
+    }
 
     public initTpbChargeTime(advantageous) {
         const speed = this.tpbRelativeSpeed();
@@ -191,32 +191,32 @@ export class Game_Battler extends Game_BattlerBase {
         if (this.isRestricted()) {
             this._tpbChargeTime = 0;
         }
-    };
+    }
 
     public tpbChargeTime() {
         return this._tpbChargeTime;
-    };
+    }
 
     public startTpbCasting() {
         this._tpbState = "casting";
         this._tpbCastTime = 0;
-    };
+    }
 
     public startTpbAction() {
         this._tpbState = "acting";
-    };
+    }
 
     public isTpbCharged() {
         return this._tpbState === "charged";
-    };
+    }
 
     public isTpbReady() {
         return this._tpbState === "ready";
-    };
+    }
 
     public isTpbTimeout() {
         return this._tpbIdleTime >= 1;
-    };
+    }
 
     public updateTpb() {
         if (this.canMove()) {
@@ -227,7 +227,7 @@ export class Game_Battler extends Game_BattlerBase {
         if (this.isAlive()) {
             this.updateTpbIdleTime();
         }
-    };
+    }
 
     public updateTpbChargeTime() {
         if (this._tpbState === "charging") {
@@ -237,7 +237,7 @@ export class Game_Battler extends Game_BattlerBase {
                 this.onTpbCharged();
             }
         }
-    };
+    }
 
     public updateTpbCastTime() {
         if (this._tpbState === "casting") {
@@ -247,71 +247,71 @@ export class Game_Battler extends Game_BattlerBase {
                 this._tpbState = "ready";
             }
         }
-    };
+    }
 
     public updateTpbAutoBattle() {
         if (this.isTpbCharged() && !this.isTpbTurnEnd() && this.isAutoBattle()) {
             this.makeTpbActions();
         }
-    };
+    }
 
     public updateTpbIdleTime() {
         if (!this.canMove() || this.isTpbCharged()) {
             this._tpbIdleTime += this.tpbAcceleration();
         }
-    };
+    }
 
     public tpbAcceleration() {
         const speed = this.tpbRelativeSpeed();
         const referenceTime = $gameParty.tpbReferenceTime();
         return speed / referenceTime;
-    };
+    }
 
     public tpbRelativeSpeed() {
         return this.tpbSpeed() / $gameParty.tpbBaseSpeed();
-    };
+    }
 
     public tpbSpeed() {
         return Math.sqrt(this.agi) + 1;
-    };
+    }
 
     public tpbBaseSpeed() {
         const baseAgility = this.paramBasePlus(6);
         return Math.sqrt(baseAgility) + 1;
-    };
+    }
 
     public tpbRequiredCastTime() {
         const actions = this._actions.filter(action => action.isValid());
         const items = actions.map(action => action.item());
         const delay = items.reduce((r, item) => r + Math.max(0, -item.speed), 0);
         return Math.sqrt(delay) / this.tpbSpeed();
-    };
+    }
 
     public onTpbCharged() {
         if (!this.shouldDelayTpbCharge()) {
             this.finishTpbCharge();
         }
-    };
+    }
 
     public shouldDelayTpbCharge() {
         return !BattleManager.isActiveTpb() && $gameParty.canInput();
-    };
+    }
 
     public finishTpbCharge() {
         this._tpbState = "charged";
         this._tpbTurnEnd = true;
         this._tpbIdleTime = 0;
-    };
+    }
 
     public isTpbTurnEnd() {
         return this._tpbTurnEnd;
-    };
+    }
 
     public initTpbTurn() {
         this._tpbTurnEnd = false;
         this._tpbTurnCount = 0;
         this._tpbIdleTime = 0;
-    };
+    }
 
     public startTpbTurn() {
         this._tpbTurnEnd = false;
@@ -320,7 +320,7 @@ export class Game_Battler extends Game_BattlerBase {
         if (this.numActions() === 0) {
             this.makeTpbActions();
         }
-    };
+    }
 
     public makeTpbActions() {
         this.makeActions();
@@ -330,13 +330,13 @@ export class Game_Battler extends Game_BattlerBase {
             this.startTpbCasting();
             this.setActionState("waiting");
         }
-    };
+    }
 
     public onTpbTimeout() {
         this.onAllActionsEnd();
         this._tpbTurnEnd = true;
         this._tpbIdleTime = 0;
-    };
+    }
 
     public turnCount() {
         if (BattleManager.isTpb()) {
@@ -344,14 +344,14 @@ export class Game_Battler extends Game_BattlerBase {
         } else {
             return $gameTroop.turnCount() + 1;
         }
-    };
+    }
 
     public canInput() {
         if (BattleManager.isTpb() && !this.isTpbCharged()) {
             return false;
         }
         return Game_BattlerBase.prototype.canInput.call(this);
-    };
+    }
 
     public refresh() {
         Game_BattlerBase.prototype.refresh.call(this);
@@ -360,7 +360,7 @@ export class Game_Battler extends Game_BattlerBase {
         } else {
             this.removeState(this.deathStateId());
         }
-    };
+    }
 
     public addState(stateId) {
         if (this.isStateAddable(stateId)) {
@@ -371,7 +371,7 @@ export class Game_Battler extends Game_BattlerBase {
             this.resetStateCounts(stateId);
             this._result.pushAddedState(stateId);
         }
-    };
+    }
 
     public isStateAddable(stateId) {
         return (
@@ -380,11 +380,11 @@ export class Game_Battler extends Game_BattlerBase {
             !this.isStateResist(stateId) &&
             !this.isStateRestrict(stateId)
         );
-    };
+    }
 
     public isStateRestrict(stateId) {
         return $dataStates[stateId].removeByRestriction && this.isRestricted();
-    };
+    }
 
     public onRestrict() {
         Game_BattlerBase.prototype.onRestrict.call(this);
@@ -395,7 +395,7 @@ export class Game_Battler extends Game_BattlerBase {
                 this.removeState(state.id);
             }
         }
-    };
+    }
 
     public removeState(stateId) {
         if (this.isStateAffected(stateId)) {
@@ -406,7 +406,7 @@ export class Game_Battler extends Game_BattlerBase {
             this.refresh();
             this._result.pushRemovedState(stateId);
         }
-    };
+    }
 
     public escape() {
         if ($gameParty.inBattle()) {
@@ -415,7 +415,7 @@ export class Game_Battler extends Game_BattlerBase {
         this.clearActions();
         this.clearStates();
         SoundManager.playEscape();
-    };
+    }
 
     public addBuff(paramId, turns) {
         if (this.isAlive()) {
@@ -426,7 +426,7 @@ export class Game_Battler extends Game_BattlerBase {
             this._result.pushAddedBuff(paramId);
             this.refresh();
         }
-    };
+    }
 
     public addDebuff(paramId, turns) {
         if (this.isAlive()) {
@@ -437,7 +437,7 @@ export class Game_Battler extends Game_BattlerBase {
             this._result.pushAddedDebuff(paramId);
             this.refresh();
         }
-    };
+    }
 
     public removeBuff(paramId) {
         if (this.isAlive() && this.isBuffOrDebuffAffected(paramId)) {
@@ -445,7 +445,7 @@ export class Game_Battler extends Game_BattlerBase {
             this._result.pushRemovedBuff(paramId);
             this.refresh();
         }
-    };
+    }
 
     public removeBattleStates() {
         for (const state of this.states()) {
@@ -453,13 +453,13 @@ export class Game_Battler extends Game_BattlerBase {
                 this.removeState(state.id);
             }
         }
-    };
+    }
 
     public removeAllBuffs() {
         for (let i = 0; i < this.buffLength(); i++) {
             this.removeBuff(i);
         }
-    };
+    }
 
     public removeStatesAuto(timing) {
         for (const state of this.states()) {
@@ -470,7 +470,7 @@ export class Game_Battler extends Game_BattlerBase {
                 this.removeState(state.id);
             }
         }
-    };
+    }
 
     public removeBuffsAuto() {
         for (let i = 0; i < this.buffLength(); i++) {
@@ -478,7 +478,7 @@ export class Game_Battler extends Game_BattlerBase {
                 this.removeBuff(i);
             }
         }
-    };
+    }
 
     public removeStatesByDamage() {
         for (const state of this.states()) {
@@ -489,12 +489,12 @@ export class Game_Battler extends Game_BattlerBase {
                 this.removeState(state.id);
             }
         }
-    };
+    }
 
     public makeActionTimes() {
         const actionPlusSet = this.actionPlusSet();
         return actionPlusSet.reduce((r, p) => (Math.random() < p ? r + 1 : r), 1);
-    };
+    }
 
     public makeActions() {
         this.clearActions();
@@ -505,27 +505,27 @@ export class Game_Battler extends Game_BattlerBase {
                 this._actions.push(new Game_Action(this));
             }
         }
-    };
+    }
 
     public speed() {
         return this._speed;
-    };
+    }
 
     public makeSpeed() {
         this._speed = Math.min(...this._actions.map(action => action.speed())) || 0;
-    };
+    }
 
     public currentAction() {
         return this._actions[0];
-    };
+    }
 
     public removeCurrentAction() {
         this._actions.shift();
-    };
+    }
 
     public setLastTarget(target) {
         this._lastTargetIndex = target ? target.index() : 0;
-    };
+    }
 
     public forceAction(skillId, targetIndex) {
         this.clearActions();
@@ -539,7 +539,7 @@ export class Game_Battler extends Game_BattlerBase {
             action.setTarget(targetIndex);
         }
         this._actions.push(action);
-    };
+    }
 
     public useItem(item) {
         if (DataManager.isSkill(item)) {
@@ -547,44 +547,44 @@ export class Game_Battler extends Game_BattlerBase {
         } else if (DataManager.isItem(item)) {
             this.consumeItem(item);
         }
-    };
+    }
 
     public consumeItem(item) {
         $gameParty.consumeItem(item);
-    };
+    }
 
     public gainHp(value) {
         this._result.hpDamage = -value;
         this._result.hpAffected = true;
         this.setHp(this.hp + value);
-    };
+    }
 
     public gainMp(value) {
         this._result.mpDamage = -value;
         this.setMp(this.mp + value);
-    };
+    }
 
     public gainTp(value) {
         this._result.tpDamage = -value;
         this.setTp(this.tp + value);
-    };
+    }
 
     public gainSilentTp(value) {
         this.setTp(this.tp + value);
-    };
+    }
 
     public initTp() {
         this.setTp(Math.randomInt(25));
-    };
+    }
 
     public clearTp() {
         this.setTp(0);
-    };
+    }
 
     public chargeTpByDamage(damageRate) {
         const value = Math.floor(50 * damageRate * this.tcr);
         this.gainSilentTp(value);
-    };
+    }
 
     public regenerateHp() {
         const minRecover = -this.maxSlipDamage();
@@ -592,23 +592,23 @@ export class Game_Battler extends Game_BattlerBase {
         if (value !== 0) {
             this.gainHp(value);
         }
-    };
+    }
 
     public maxSlipDamage() {
         return $dataSystem.optSlipDeath ? this.hp : Math.max(this.hp - 1, 0);
-    };
+    }
 
     public regenerateMp() {
         const value = Math.floor(this.mmp * this.mrg);
         if (value !== 0) {
             this.gainMp(value);
         }
-    };
+    }
 
     public regenerateTp() {
         const value = Math.floor(100 * this.trg);
         this.gainSilentTp(value);
-    };
+    }
 
     public regenerateAll() {
         if (this.isAlive()) {
@@ -616,7 +616,7 @@ export class Game_Battler extends Game_BattlerBase {
             this.regenerateMp();
             this.regenerateTp();
         }
-    };
+    }
 
     public onBattleStart(advantageous) {
         this.setActionState("undecided");
@@ -626,13 +626,13 @@ export class Game_Battler extends Game_BattlerBase {
         if (!this.isPreserveTp()) {
             this.initTp();
         }
-    };
+    }
 
     public onAllActionsEnd() {
         this.clearResult();
         this.removeStatesAuto(1);
         this.removeBuffsAuto();
-    };
+    }
 
     public onTurnEnd() {
         this.clearResult();
@@ -640,7 +640,7 @@ export class Game_Battler extends Game_BattlerBase {
         this.updateStateTurns();
         this.updateBuffTurns();
         this.removeStatesAuto(2);
-    };
+    }
 
     public onBattleEnd() {
         this.clearResult();
@@ -651,97 +651,97 @@ export class Game_Battler extends Game_BattlerBase {
             this.clearTp();
         }
         this.appear();
-    };
+    }
 
     public onDamage(value) {
         this.removeStatesByDamage();
         this.chargeTpByDamage(value / this.mhp);
-    };
+    }
 
     public setActionState(actionState) {
         this._actionState = actionState;
         this.requestMotionRefresh();
-    };
+    }
 
     public isUndecided() {
         return this._actionState === "undecided";
-    };
+    }
 
     public isInputting() {
         return this._actionState === "inputting";
-    };
+    }
 
     public isWaiting() {
         return this._actionState === "waiting";
-    };
+    }
 
     public isActing() {
         return this._actionState === "acting";
-    };
+    }
 
     public isChanting() {
         if (this.isWaiting()) {
             return this._actions.some(action => action.isMagicSkill());
         }
         return false;
-    };
+    }
 
     public isGuardWaiting() {
         if (this.isWaiting()) {
             return this._actions.some(action => action.isGuard());
         }
         return false;
-    };
+    }
 
     public performActionStart(action) {
         if (!action.isGuard()) {
             this.setActionState("acting");
         }
-    };
+    }
 
     public performAction(...args/*action*/) {
         //
-    };
+    }
 
     public performActionEnd() {
         //
-    };
+    }
 
     public performDamage() {
         //
-    };
+    }
 
     public performMiss() {
         SoundManager.playMiss();
-    };
+    }
 
     public performRecovery() {
         SoundManager.playRecovery();
-    };
+    }
 
     public performEvasion() {
         SoundManager.playEvasion();
-    };
+    }
 
     public performMagicEvasion() {
         SoundManager.playMagicEvasion();
-    };
+    }
 
     public performCounter() {
         SoundManager.playEvasion();
-    };
+    }
 
     public performReflection() {
         SoundManager.playReflection();
-    };
+    }
 
     public performSubstitute(/*target*/) {
         //
-    };
+    }
 
     public performCollapse() {
         //
-    };
+    }
 
 }
 

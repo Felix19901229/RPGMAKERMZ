@@ -1,6 +1,8 @@
 import "./Core/JsExtensions.js";
 import * as Core from "./Core/index.js";
 import * as Game from "./Game/index.js";
+import * as Manager from "./Manager/index.js";
+import * as Sprites from "./Spriteset/index.js";
 window.$dataActors = null;
 window.$dataClasses = null;
 window.$dataSkills = null;
@@ -35,10 +37,7 @@ const scriptUrls = [
     "js/libs/localforage.min.js",
     "js/libs/effekseer.min.js",
     "js/libs/vorbisdecoder.js",
-    "js/rmmz_managers.js",
-    "js/rmmz_objects.js",
     "js/rmmz_scenes.js",
-    "js/rmmz_sprites.js",
     "js/rmmz_windows.js",
     "js/plugins.js"
 ];
@@ -56,6 +55,8 @@ class Main {
     run() {
         Object.assign(window, Core);
         Object.assign(window, Game);
+        Object.assign(window, Manager);
+        Object.assign(window, Sprites);
         this.showLoadingSpinner();
         this.testXhr();
         this.loadMainScripts();

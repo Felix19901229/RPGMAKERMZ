@@ -25,7 +25,6 @@ export class Game_Battler extends Game_BattlerBase {
     initialize(...args) {
         Game_BattlerBase.prototype.initialize.call(this);
     }
-    ;
     initMembers() {
         Game_BattlerBase.prototype.initMembers.call(this);
         this._actions = [];
@@ -46,84 +45,64 @@ export class Game_Battler extends Game_BattlerBase {
         this._tpbTurnCount = 0;
         this._tpbTurnEnd = false;
     }
-    ;
     clearDamagePopup() {
         this._damagePopup = false;
     }
-    ;
     clearWeaponAnimation() {
         this._weaponImageId = 0;
     }
-    ;
     clearEffect() {
         this._effectType = null;
     }
-    ;
     clearMotion() {
         this._motionType = null;
         this._motionRefresh = false;
     }
-    ;
     requestEffect(effectType) {
         this._effectType = effectType;
     }
-    ;
     requestMotion(motionType) {
         this._motionType = motionType;
     }
-    ;
     requestMotionRefresh() {
         this._motionRefresh = true;
     }
-    ;
     select() {
         this._selected = true;
     }
-    ;
     deselect() {
         this._selected = false;
     }
-    ;
     isDamagePopupRequested() {
         return this._damagePopup;
     }
-    ;
     isEffectRequested() {
         return !!this._effectType;
     }
-    ;
     isMotionRequested() {
         return !!this._motionType;
     }
-    ;
     isWeaponAnimationRequested() {
         return this._weaponImageId > 0;
     }
-    ;
     isMotionRefreshRequested() {
         return this._motionRefresh;
     }
-    ;
     isSelected() {
         return this._selected;
     }
-    ;
     effectType() {
         return this._effectType;
     }
-    ;
     motionType() {
         return this._motionType;
     }
-    ;
     weaponImageId() {
         return this._weaponImageId;
     }
-    ;
     startDamagePopup() {
         this._damagePopup = true;
     }
-    ;
     shouldPopupDamage() {
         const result = this._result;
         return (result.missed ||
@@ -131,45 +110,35 @@ export class Game_Battler extends Game_BattlerBase {
             result.hpAffected ||
             result.mpDamage !== 0);
     }
-    ;
     startWeaponAnimation(weaponImageId) {
         this._weaponImageId = weaponImageId;
     }
-    ;
     action(index) {
         return this._actions[index];
     }
-    ;
     setAction(index, action) {
         this._actions[index] = action;
     }
-    ;
     numActions() {
         return this._actions.length;
     }
-    ;
     clearActions() {
         this._actions = [];
     }
-    ;
     result() {
         return this._result;
     }
-    ;
     clearResult() {
         this._result.clear();
     }
-    ;
     clearTpbChargeTime() {
         this._tpbState = "charging";
         this._tpbChargeTime = 0;
     }
-    ;
     applyTpbPenalty() {
         this._tpbState = "charging";
         this._tpbChargeTime -= 1;
     }
-    ;
     initTpbChargeTime(advantageous) {
         const speed = this.tpbRelativeSpeed();
         this._tpbState = "charging";
@@ -178,32 +147,25 @@ export class Game_Battler extends Game_BattlerBase {
             this._tpbChargeTime = 0;
         }
     }
-    ;
     tpbChargeTime() {
         return this._tpbChargeTime;
     }
-    ;
     startTpbCasting() {
         this._tpbState = "casting";
         this._tpbCastTime = 0;
     }
-    ;
     startTpbAction() {
         this._tpbState = "acting";
     }
-    ;
     isTpbCharged() {
         return this._tpbState === "charged";
     }
-    ;
     isTpbReady() {
         return this._tpbState === "ready";
     }
-    ;
     isTpbTimeout() {
         return this._tpbIdleTime >= 1;
     }
-    ;
     updateTpb() {
         if (this.canMove()) {
             this.updateTpbChargeTime();
@@ -214,7 +176,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.updateTpbIdleTime();
         }
     }
-    ;
     updateTpbChargeTime() {
         if (this._tpbState === "charging") {
             this._tpbChargeTime += this.tpbAcceleration();
@@ -224,7 +185,6 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     updateTpbCastTime() {
         if (this._tpbState === "casting") {
             this._tpbCastTime += this.tpbAcceleration();
@@ -234,71 +194,58 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     updateTpbAutoBattle() {
         if (this.isTpbCharged() && !this.isTpbTurnEnd() && this.isAutoBattle()) {
             this.makeTpbActions();
         }
     }
-    ;
     updateTpbIdleTime() {
         if (!this.canMove() || this.isTpbCharged()) {
             this._tpbIdleTime += this.tpbAcceleration();
         }
     }
-    ;
     tpbAcceleration() {
         const speed = this.tpbRelativeSpeed();
         const referenceTime = $gameParty.tpbReferenceTime();
         return speed / referenceTime;
     }
-    ;
     tpbRelativeSpeed() {
         return this.tpbSpeed() / $gameParty.tpbBaseSpeed();
     }
-    ;
     tpbSpeed() {
         return Math.sqrt(this.agi) + 1;
     }
-    ;
     tpbBaseSpeed() {
         const baseAgility = this.paramBasePlus(6);
         return Math.sqrt(baseAgility) + 1;
     }
-    ;
     tpbRequiredCastTime() {
         const actions = this._actions.filter(action => action.isValid());
         const items = actions.map(action => action.item());
         const delay = items.reduce((r, item) => r + Math.max(0, -item.speed), 0);
         return Math.sqrt(delay) / this.tpbSpeed();
     }
-    ;
     onTpbCharged() {
         if (!this.shouldDelayTpbCharge()) {
             this.finishTpbCharge();
         }
     }
-    ;
     shouldDelayTpbCharge() {
         return !BattleManager.isActiveTpb() && $gameParty.canInput();
     }
-    ;
     finishTpbCharge() {
         this._tpbState = "charged";
         this._tpbTurnEnd = true;
         this._tpbIdleTime = 0;
     }
-    ;
     isTpbTurnEnd() {
         return this._tpbTurnEnd;
     }
-    ;
     initTpbTurn() {
         this._tpbTurnEnd = false;
         this._tpbTurnCount = 0;
         this._tpbIdleTime = 0;
     }
-    ;
     startTpbTurn() {
         this._tpbTurnEnd = false;
         this._tpbTurnCount++;
@@ -307,7 +254,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.makeTpbActions();
         }
     }
-    ;
     makeTpbActions() {
         this.makeActions();
         if (this.canInput()) {
@@ -318,13 +264,11 @@ export class Game_Battler extends Game_BattlerBase {
             this.setActionState("waiting");
         }
     }
-    ;
     onTpbTimeout() {
         this.onAllActionsEnd();
         this._tpbTurnEnd = true;
         this._tpbIdleTime = 0;
     }
-    ;
     turnCount() {
         if (BattleManager.isTpb()) {
             return this._tpbTurnCount;
@@ -333,14 +277,12 @@ export class Game_Battler extends Game_BattlerBase {
             return $gameTroop.turnCount() + 1;
         }
     }
-    ;
     canInput() {
         if (BattleManager.isTpb() && !this.isTpbCharged()) {
             return false;
         }
         return Game_BattlerBase.prototype.canInput.call(this);
     }
-    ;
     refresh() {
         Game_BattlerBase.prototype.refresh.call(this);
         if (this.hp === 0) {
@@ -350,7 +292,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.removeState(this.deathStateId());
         }
     }
-    ;
     addState(stateId) {
         if (this.isStateAddable(stateId)) {
             if (!this.isStateAffected(stateId)) {
@@ -361,18 +302,15 @@ export class Game_Battler extends Game_BattlerBase {
             this._result.pushAddedState(stateId);
         }
     }
-    ;
     isStateAddable(stateId) {
         return (this.isAlive() &&
             $dataStates[stateId] &&
             !this.isStateResist(stateId) &&
             !this.isStateRestrict(stateId));
     }
-    ;
     isStateRestrict(stateId) {
         return $dataStates[stateId].removeByRestriction && this.isRestricted();
     }
-    ;
     onRestrict() {
         Game_BattlerBase.prototype.onRestrict.call(this);
         this.clearTpbChargeTime();
@@ -383,7 +321,6 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     removeState(stateId) {
         if (this.isStateAffected(stateId)) {
             if (stateId === this.deathStateId()) {
@@ -394,7 +331,6 @@ export class Game_Battler extends Game_BattlerBase {
             this._result.pushRemovedState(stateId);
         }
     }
-    ;
     escape() {
         if ($gameParty.inBattle()) {
             this.hide();
@@ -403,7 +339,6 @@ export class Game_Battler extends Game_BattlerBase {
         this.clearStates();
         SoundManager.playEscape();
     }
-    ;
     addBuff(paramId, turns) {
         if (this.isAlive()) {
             this.increaseBuff(paramId);
@@ -414,7 +349,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.refresh();
         }
     }
-    ;
     addDebuff(paramId, turns) {
         if (this.isAlive()) {
             this.decreaseBuff(paramId);
@@ -425,7 +359,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.refresh();
         }
     }
-    ;
     removeBuff(paramId) {
         if (this.isAlive() && this.isBuffOrDebuffAffected(paramId)) {
             this.eraseBuff(paramId);
@@ -433,7 +366,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.refresh();
         }
     }
-    ;
     removeBattleStates() {
         for (const state of this.states()) {
             if (state.removeAtBattleEnd) {
@@ -441,13 +373,11 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     removeAllBuffs() {
         for (let i = 0; i < this.buffLength(); i++) {
             this.removeBuff(i);
         }
     }
-    ;
     removeStatesAuto(timing) {
         for (const state of this.states()) {
             if (this.isStateExpired(state.id) &&
@@ -456,7 +386,6 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     removeBuffsAuto() {
         for (let i = 0; i < this.buffLength(); i++) {
             if (this.isBuffExpired(i)) {
@@ -464,7 +393,6 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     removeStatesByDamage() {
         for (const state of this.states()) {
             if (state.removeByDamage &&
@@ -473,12 +401,10 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     makeActionTimes() {
         const actionPlusSet = this.actionPlusSet();
         return actionPlusSet.reduce((r, p) => (Math.random() < p ? r + 1 : r), 1);
     }
-    ;
     makeActions() {
         this.clearActions();
         if (this.canMove()) {
@@ -489,27 +415,21 @@ export class Game_Battler extends Game_BattlerBase {
             }
         }
     }
-    ;
     speed() {
         return this._speed;
     }
-    ;
     makeSpeed() {
         this._speed = Math.min(...this._actions.map(action => action.speed())) || 0;
     }
-    ;
     currentAction() {
         return this._actions[0];
     }
-    ;
     removeCurrentAction() {
         this._actions.shift();
     }
-    ;
     setLastTarget(target) {
         this._lastTargetIndex = target ? target.index() : 0;
     }
-    ;
     forceAction(skillId, targetIndex) {
         this.clearActions();
         const action = new Game_Action(this, true);
@@ -525,7 +445,6 @@ export class Game_Battler extends Game_BattlerBase {
         }
         this._actions.push(action);
     }
-    ;
     useItem(item) {
         if (DataManager.isSkill(item)) {
             this.paySkillCost(item);
@@ -534,44 +453,35 @@ export class Game_Battler extends Game_BattlerBase {
             this.consumeItem(item);
         }
     }
-    ;
     consumeItem(item) {
         $gameParty.consumeItem(item);
     }
-    ;
     gainHp(value) {
         this._result.hpDamage = -value;
         this._result.hpAffected = true;
         this.setHp(this.hp + value);
     }
-    ;
     gainMp(value) {
         this._result.mpDamage = -value;
         this.setMp(this.mp + value);
     }
-    ;
     gainTp(value) {
         this._result.tpDamage = -value;
         this.setTp(this.tp + value);
     }
-    ;
     gainSilentTp(value) {
         this.setTp(this.tp + value);
     }
-    ;
     initTp() {
         this.setTp(Math.randomInt(25));
     }
-    ;
     clearTp() {
         this.setTp(0);
     }
-    ;
     chargeTpByDamage(damageRate) {
         const value = Math.floor(50 * damageRate * this.tcr);
         this.gainSilentTp(value);
     }
-    ;
     regenerateHp() {
         const minRecover = -this.maxSlipDamage();
         const value = Math.max(Math.floor(this.mhp * this.hrg), minRecover);
@@ -579,23 +489,19 @@ export class Game_Battler extends Game_BattlerBase {
             this.gainHp(value);
         }
     }
-    ;
     maxSlipDamage() {
         return $dataSystem.optSlipDeath ? this.hp : Math.max(this.hp - 1, 0);
     }
-    ;
     regenerateMp() {
         const value = Math.floor(this.mmp * this.mrg);
         if (value !== 0) {
             this.gainMp(value);
         }
     }
-    ;
     regenerateTp() {
         const value = Math.floor(100 * this.trg);
         this.gainSilentTp(value);
     }
-    ;
     regenerateAll() {
         if (this.isAlive()) {
             this.regenerateHp();
@@ -603,7 +509,6 @@ export class Game_Battler extends Game_BattlerBase {
             this.regenerateTp();
         }
     }
-    ;
     onBattleStart(advantageous) {
         this.setActionState("undecided");
         this.clearMotion();
@@ -613,13 +518,11 @@ export class Game_Battler extends Game_BattlerBase {
             this.initTp();
         }
     }
-    ;
     onAllActionsEnd() {
         this.clearResult();
         this.removeStatesAuto(1);
         this.removeBuffsAuto();
     }
-    ;
     onTurnEnd() {
         this.clearResult();
         this.regenerateAll();
@@ -627,7 +530,6 @@ export class Game_Battler extends Game_BattlerBase {
         this.updateBuffTurns();
         this.removeStatesAuto(2);
     }
-    ;
     onBattleEnd() {
         this.clearResult();
         this.removeBattleStates();
@@ -638,90 +540,69 @@ export class Game_Battler extends Game_BattlerBase {
         }
         this.appear();
     }
-    ;
     onDamage(value) {
         this.removeStatesByDamage();
         this.chargeTpByDamage(value / this.mhp);
     }
-    ;
     setActionState(actionState) {
         this._actionState = actionState;
         this.requestMotionRefresh();
     }
-    ;
     isUndecided() {
         return this._actionState === "undecided";
     }
-    ;
     isInputting() {
         return this._actionState === "inputting";
     }
-    ;
     isWaiting() {
         return this._actionState === "waiting";
     }
-    ;
     isActing() {
         return this._actionState === "acting";
     }
-    ;
     isChanting() {
         if (this.isWaiting()) {
             return this._actions.some(action => action.isMagicSkill());
         }
         return false;
     }
-    ;
     isGuardWaiting() {
         if (this.isWaiting()) {
             return this._actions.some(action => action.isGuard());
         }
         return false;
     }
-    ;
     performActionStart(action) {
         if (!action.isGuard()) {
             this.setActionState("acting");
         }
     }
-    ;
     performAction(...args) {
     }
-    ;
     performActionEnd() {
     }
-    ;
     performDamage() {
     }
-    ;
     performMiss() {
         SoundManager.playMiss();
     }
-    ;
     performRecovery() {
         SoundManager.playRecovery();
     }
-    ;
     performEvasion() {
         SoundManager.playEvasion();
     }
-    ;
     performMagicEvasion() {
         SoundManager.playMagicEvasion();
     }
-    ;
     performCounter() {
         SoundManager.playEvasion();
     }
-    ;
     performReflection() {
         SoundManager.playReflection();
     }
-    ;
     performSubstitute() {
     }
-    ;
     performCollapse() {
     }
-    ;
 }

@@ -20,7 +20,7 @@ export class Game_Actor extends Game_Battler {
     _faceName: string;
     _faceIndex: number;
     _battlerName: string;
-    _exp: {};
+    _exp: {}
     _skills: number[];
     _equips: Game_Item[];
     _actionInputIndex: number;
@@ -28,7 +28,7 @@ export class Game_Actor extends Game_Battler {
     _lastBattleSkill: Nullable<Game_Item>;
     _lastCommandSymbol: string;
     _profile: string;
-    _stateSteps: {};
+    _stateSteps: {}
     get level() {
         return this._level;
     }
@@ -41,7 +41,7 @@ export class Game_Actor extends Game_Battler {
     public initialize(actorId) {
         Game_Battler.prototype.initialize.call(this);
         this.setup(actorId);
-    };
+    }
 
     public initMembers() {
         Game_Battler.prototype.initMembers.call(this);
@@ -55,14 +55,14 @@ export class Game_Actor extends Game_Battler {
         this._faceName = "";
         this._faceIndex = 0;
         this._battlerName = "";
-        this._exp = {};
+        this._exp = {}
         this._skills = [];
         this._equips = [];
         this._actionInputIndex = 0;
         this._lastMenuSkill = new Game_Item();
         this._lastBattleSkill = new Game_Item();
         this._lastCommandSymbol = "";
-    };
+    }
 
     public setup(actorId) {
         const actor = $dataActors[actorId];
@@ -78,74 +78,74 @@ export class Game_Actor extends Game_Battler {
         this.initEquips(actor.equips);
         this.clearParamPlus();
         this.recoverAll();
-    };
+    }
 
     public actorId() {
         return this._actorId;
-    };
+    }
 
     public actor() {
         return $dataActors[this._actorId];
-    };
+    }
 
     public name() {
         return this._name;
-    };
+    }
 
     public setName(name) {
         this._name = name;
-    };
+    }
 
     public nickname() {
         return this._nickname;
-    };
+    }
 
     public setNickname(nickname) {
         this._nickname = nickname;
-    };
+    }
 
     public profile() {
         return this._profile;
-    };
+    }
 
     public setProfile(profile) {
         this._profile = profile;
-    };
+    }
 
     public characterName() {
         return this._characterName;
-    };
+    }
 
     public characterIndex() {
         return this._characterIndex;
-    };
+    }
 
     public faceName() {
         return this._faceName;
-    };
+    }
 
     public faceIndex() {
         return this._faceIndex;
-    };
+    }
 
     public battlerName() {
         return this._battlerName;
-    };
+    }
 
     public clearStates() {
         Game_Battler.prototype.clearStates.call(this);
-        this._stateSteps = {};
-    };
+        this._stateSteps = {}
+    }
 
     public eraseState(stateId) {
         Game_Battler.prototype.eraseState.call(this, stateId);
         delete this._stateSteps[stateId];
-    };
+    }
 
     public resetStateCounts(stateId) {
         Game_Battler.prototype.resetStateCounts.call(this, stateId);
         this._stateSteps[stateId] = $dataStates[stateId].stepsToRemove;
-    };
+    }
 
     public initImages() {
         const actor = this.actor();
@@ -154,7 +154,7 @@ export class Game_Actor extends Game_Battler {
         this._faceName = actor.faceName;
         this._faceIndex = actor.faceIndex;
         this._battlerName = actor.battlerName;
-    };
+    }
 
     public expForLevel(level) {
         const c = this.currentClass();
@@ -167,35 +167,35 @@ export class Game_Actor extends Game_Battler {
             (6 + Math.pow(level, 2) / 50 / acc_b) +
             (level - 1) * extra
         );
-    };
+    }
 
     public initExp() {
         this._exp[this._classId] = this.currentLevelExp();
-    };
+    }
 
     public currentExp() {
         return this._exp[this._classId];
-    };
+    }
 
     public currentLevelExp() {
         return this.expForLevel(this._level);
-    };
+    }
 
     public nextLevelExp() {
         return this.expForLevel(this._level + 1);
-    };
+    }
 
     public nextRequiredExp() {
         return this.nextLevelExp() - this.currentExp();
-    };
+    }
 
     public maxLevel() {
         return this.actor().maxLevel;
-    };
+    }
 
     public isMaxLevel() {
         return this._level >= this.maxLevel();
-    };
+    }
 
     public initSkills() {
         this._skills = [];
@@ -204,7 +204,7 @@ export class Game_Actor extends Game_Battler {
                 this.learnSkill(learning.skillId);
             }
         }
-    };
+    }
 
     public initEquips(equips) {
         const slots = this.equipSlots();
@@ -220,7 +220,7 @@ export class Game_Actor extends Game_Battler {
         }
         this.releaseUnequippableItems(true);
         this.refresh();
-    };
+    }
 
     public equipSlots() {
         const slots = [];
@@ -231,34 +231,34 @@ export class Game_Actor extends Game_Battler {
             slots[1] = 1;
         }
         return slots;
-    };
+    }
 
     public equips() {
         return this._equips.map(item => item.object());
-    };
+    }
 
     public weapons() {
         return this.equips().filter(item => item && DataManager.isWeapon(item)) as Weapon[];
-    };
+    }
 
     public armors() {
         return this.equips().filter(item => item && DataManager.isArmor(item)) as Armor[];
-    };
+    }
 
     public hasWeapon(weapon) {
         return this.weapons().includes(weapon);
-    };
+    }
 
     public hasArmor(armor) {
         return this.armors().includes(armor);
-    };
+    }
 
     public isEquipChangeOk(slotId) {
         return (
             !this.isEquipTypeLocked(this.equipSlots()[slotId]) &&
             !this.isEquipTypeSealed(this.equipSlots()[slotId])
         );
-    };
+    }
 
     public changeEquip(slotId, item) {
         if (
@@ -268,13 +268,13 @@ export class Game_Actor extends Game_Battler {
             this._equips[slotId].setObject(item);
             this.refresh();
         }
-    };
+    }
 
     public forceChangeEquip(slotId, item) {
         this._equips[slotId].setObject(item);
         this.releaseUnequippableItems(true);
         this.refresh();
-    };
+    }
 
     public tradeItemWithParty(newItem, oldItem) {
         if (newItem && !$gameParty.hasItem(newItem)) {
@@ -284,7 +284,7 @@ export class Game_Actor extends Game_Battler {
             $gameParty.loseItem(newItem, 1);
             return true;
         }
-    };
+    }
 
     public changeEquipById(etypeId, itemId) {
         const slotId = etypeId - 1;
@@ -293,18 +293,18 @@ export class Game_Actor extends Game_Battler {
         } else {
             this.changeEquip(slotId, $dataArmors[itemId]);
         }
-    };
+    }
 
     public isEquipped(item) {
         return this.equips().includes(item);
-    };
+    }
 
     public discardEquip(item) {
         const slotId = this.equips().indexOf(item);
         if (slotId >= 0) {
             this._equips[slotId].setObject(null);
         }
-    };
+    }
 
     public releaseUnequippableItems(forcing) {
         for (; ;) {
@@ -326,7 +326,7 @@ export class Game_Actor extends Game_Battler {
                 break;
             }
         }
-    };
+    }
 
     public clearEquipments() {
         const maxSlots = this.equipSlots().length;
@@ -335,7 +335,7 @@ export class Game_Actor extends Game_Battler {
                 this.changeEquip(i, null);
             }
         }
-    };
+    }
 
     public optimizeEquipments() {
         const maxSlots = this.equipSlots().length;
@@ -345,7 +345,7 @@ export class Game_Actor extends Game_Battler {
                 this.changeEquip(i, this.bestEquipItem(i));
             }
         }
-    };
+    }
 
     public bestEquipItem(slotId) {
         const etypeId = this.equipSlots()[slotId];
@@ -362,11 +362,11 @@ export class Game_Actor extends Game_Battler {
             }
         }
         return bestItem;
-    };
+    }
 
     public calcEquipItemPerformance(item) {
         return item.params.reduce((a, b) => a + b);
-    };
+    }
 
     public isSkillWtypeOk(skill) {
         const wtypeId1 = skill.requiredWtypeId1;
@@ -380,58 +380,58 @@ export class Game_Actor extends Game_Battler {
         } else {
             return false;
         }
-    };
+    }
 
     public isWtypeEquipped(wtypeId) {
         return this.weapons().some(weapon => weapon.wtypeId === wtypeId);
-    };
+    }
 
     public refresh() {
         this.releaseUnequippableItems(false);
         Game_Battler.prototype.refresh.call(this);
-    };
+    }
 
     public hide() {
         Game_Battler.prototype.hide.call(this);
         $gameTemp.requestBattleRefresh();
-    };
+    }
 
     public isActor() {
         return true;
-    };
+    }
 
     public friendsUnit() {
         return $gameParty;
-    };
+    }
 
     public opponentsUnit() {
         return $gameTroop;
-    };
+    }
 
     public index() {
         return $gameParty.members().indexOf(this);
-    };
+    }
 
     public isBattleMember() {
         return $gameParty.battleMembers().includes(this);
-    };
+    }
 
     public isFormationChangeOk() {
         return true;
-    };
+    }
 
     public currentClass() {
         return $dataClasses[this._classId];
-    };
+    }
 
     public isClass(gameClass) {
         return gameClass && this._classId === gameClass.id;
-    };
+    }
 
     public skillTypes() {
         const skillTypes = this.addedSkillTypes().sort((a, b) => a - b);
         return skillTypes.filter((x, i, self) => self.indexOf(x) === i);
-    };
+    }
 
     public skills() {
         const list = [];
@@ -441,11 +441,11 @@ export class Game_Actor extends Game_Battler {
             }
         }
         return list;
-    };
+    }
 
     public usableSkills() {
         return this.skills().filter(skill => this.canUse(skill));
-    };
+    }
 
     public traitObjects() {
         const objects = Game_Battler.prototype.traitObjects.call(this);
@@ -456,7 +456,7 @@ export class Game_Actor extends Game_Battler {
             }
         }
         return objects;
-    };
+    }
 
     public attackElements() {
         const set = Game_Battler.prototype.attackElements.call(this);
@@ -464,19 +464,19 @@ export class Game_Actor extends Game_Battler {
             set.push(this.bareHandsElementId());
         }
         return set;
-    };
+    }
 
     public hasNoWeapons() {
         return this.weapons().length === 0;
-    };
+    }
 
     public bareHandsElementId() {
         return 1;
-    };
+    }
 
     public paramBase(paramId) {
         return this.currentClass().params[paramId][this._level];
-    };
+    }
 
     public paramPlus(paramId) {
         let value = Game_Battler.prototype.paramPlus.call(this, paramId);
@@ -487,7 +487,7 @@ export class Game_Actor extends Game_Battler {
             }
         }
         return value;
-    };
+    }
 
     public attackAnimationId1() {
         if (this.hasNoWeapons()) {
@@ -496,16 +496,16 @@ export class Game_Actor extends Game_Battler {
             const weapons = this.weapons();
             return weapons[0] ? weapons[0].animationId : 0;
         }
-    };
+    }
 
     public attackAnimationId2() {
         const weapons = this.weapons();
         return weapons[1] ? weapons[1].animationId : 0;
-    };
+    }
 
     public bareHandsAnimationId() {
         return 1;
-    };
+    }
 
     public changeExp(exp, show) {
         this._exp[this._classId] = Math.max(exp, 0);
@@ -521,7 +521,7 @@ export class Game_Actor extends Game_Battler {
             this.displayLevelUp(this.findNewSkills(lastSkills));
         }
         this.refresh();
-    };
+    }
 
     public levelUp() {
         this._level++;
@@ -530,11 +530,11 @@ export class Game_Actor extends Game_Battler {
                 this.learnSkill(learning.skillId);
             }
         }
-    };
+    }
 
     public levelDown() {
         this._level--;
-    };
+    }
 
     public findNewSkills(lastSkills) {
         const newSkills = this.skills();
@@ -542,7 +542,7 @@ export class Game_Actor extends Game_Battler {
             newSkills.remove(lastSkill);
         }
         return newSkills;
-    };
+    }
 
     public displayLevelUp(newSkills) {
         const text = TextManager.levelUp.format(this._name,TextManager.level,this._level);
@@ -551,48 +551,48 @@ export class Game_Actor extends Game_Battler {
         for (const skill of newSkills) {
             $gameMessage.add(TextManager.obtainSkill.format(skill.name));
         }
-    };
+    }
 
     public gainExp(exp) {
         const newExp = this.currentExp() + Math.round(exp * this.finalExpRate());
         this.changeExp(newExp, this.shouldDisplayLevelUp());
-    };
+    }
 
     public finalExpRate() {
         return this.exr * (this.isBattleMember() ? 1 : this.benchMembersExpRate());
-    };
+    }
 
     public benchMembersExpRate() {
         return $dataSystem.optExtraExp ? 1 : 0;
-    };
+    }
 
     public shouldDisplayLevelUp() {
         return true;
-    };
+    }
 
     public changeLevel(level, show) {
         level = level.clamp(1, this.maxLevel());
         this.changeExp(this.expForLevel(level), show);
-    };
+    }
 
     public learnSkill(skillId) {
         if (!this.isLearnedSkill(skillId)) {
             this._skills.push(skillId);
             this._skills.sort((a, b) => a - b);
         }
-    };
+    }
 
     public forgetSkill(skillId) {
         this._skills.remove(skillId);
-    };
+    }
 
     public isLearnedSkill(skillId) {
         return this._skills.includes(skillId);
-    };
+    }
 
     public hasSkill(skillId) {
         return this.skills().includes($dataSkills[skillId]);
-    };
+    }
 
     public changeClass(classId, keepExp) {
         if (keepExp) {
@@ -602,7 +602,7 @@ export class Game_Actor extends Game_Battler {
         this._level = 0;
         this.changeExp(this._exp[this._classId] || 0, false);
         this.refresh();
-    };
+    }
 
     public setCharacterImage(
         characterName,
@@ -610,25 +610,25 @@ export class Game_Actor extends Game_Battler {
     ) {
         this._characterName = characterName;
         this._characterIndex = characterIndex;
-    };
+    }
 
     public setFaceImage(faceName, faceIndex) {
         this._faceName = faceName;
         this._faceIndex = faceIndex;
         $gameTemp.requestBattleRefresh();
-    };
+    }
 
     public setBattlerImage(battlerName) {
         this._battlerName = battlerName;
-    };
+    }
 
     public isSpriteVisible() {
         return $gameSystem.isSideView();
-    };
+    }
 
     public performActionStart(action) {
         Game_Battler.prototype.performActionStart.call(this, action);
-    };
+    }
 
     public performAction(action) {
         Game_Battler.prototype.performAction.call(this, action);
@@ -643,11 +643,11 @@ export class Game_Actor extends Game_Battler {
         } else if (action.isItem()) {
             this.requestMotion("item");
         }
-    };
+    }
 
     public performActionEnd() {
         Game_Battler.prototype.performActionEnd.call(this);
-    };
+    }
 
     public performAttack() {
         const weapons = this.weapons();
@@ -663,7 +663,7 @@ export class Game_Actor extends Game_Battler {
             }
             this.startWeaponAnimation(attackMotion.weaponImageId);
         }
-    };
+    }
 
     public performDamage() {
         Game_Battler.prototype.performDamage.call(this);
@@ -673,42 +673,42 @@ export class Game_Actor extends Game_Battler {
             $gameScreen.startShake(5, 5, 10);
         }
         SoundManager.playActorDamage();
-    };
+    }
 
     public performEvasion() {
         Game_Battler.prototype.performEvasion.call(this);
         this.requestMotion("evade");
-    };
+    }
 
     public performMagicEvasion() {
         Game_Battler.prototype.performMagicEvasion.call(this);
         this.requestMotion("evade");
-    };
+    }
 
     public performCounter() {
         Game_Battler.prototype.performCounter.call(this);
         this.performAttack();
-    };
+    }
 
     public performCollapse() {
         Game_Battler.prototype.performCollapse.call(this);
         if ($gameParty.inBattle()) {
             SoundManager.playActorCollapse();
         }
-    };
+    }
 
     public performVictory() {
         this.setActionState("done");
         if (this.canMove()) {
             this.requestMotion("victory");
         }
-    };
+    }
 
     public performEscape() {
         if (this.canMove()) {
             this.requestMotion("escape");
         }
-    };
+    }
 
     public makeActionList() {
         const list = [];
@@ -721,7 +721,7 @@ export class Game_Actor extends Game_Battler {
             list.push(skillAction);
         }
         return list;
-    };
+    }
 
     public makeAutoBattleActions() {
         for (let i = 0; i < this.numActions(); i++) {
@@ -736,14 +736,14 @@ export class Game_Actor extends Game_Battler {
             }
         }
         this.setActionState("waiting");
-    };
+    }
 
     public makeConfusionActions() {
         for (let i = 0; i < this.numActions(); i++) {
             this.action(i).setConfusion();
         }
         this.setActionState("waiting");
-    };
+    }
 
     public makeActions() {
         Game_Battler.prototype.makeActions.call(this);
@@ -757,7 +757,7 @@ export class Game_Actor extends Game_Battler {
         } else if (this.isConfused()) {
             this.makeConfusionActions();
         }
-    };
+    }
 
     public onPlayerWalk() {
         this.clearResult();
@@ -770,7 +770,7 @@ export class Game_Actor extends Game_Battler {
             this.showAddedStates();
             this.showRemovedStates();
         }
-    };
+    }
 
     public updateStateSteps(state) {
         if (state.removeByWalking) {
@@ -780,7 +780,7 @@ export class Game_Actor extends Game_Battler {
                 }
             }
         }
-    };
+    }
 
     public showAddedStates() {
         for (const state of this.result().addedStateObjects()) {
@@ -788,7 +788,7 @@ export class Game_Actor extends Game_Battler {
                 $gameMessage.add(state.message1.format(this._name));
             }
         }
-    };
+    }
 
     public showRemovedStates() {
         for (const state of this.result().removedStateObjects()) {
@@ -796,11 +796,11 @@ export class Game_Actor extends Game_Battler {
                 $gameMessage.add(state.message4.format(this._name));
             }
         }
-    };
+    }
 
     public stepsForTurn() {
         return 20;
-    };
+    }
 
     public turnEndOnMap() {
         if ($gameParty.steps() % this.stepsForTurn() === 0) {
@@ -809,13 +809,13 @@ export class Game_Actor extends Game_Battler {
                 this.performMapDamage();
             }
         }
-    };
+    }
 
     public checkFloorEffect() {
         if ($gamePlayer.isOnDamageFloor()) {
             this.executeFloorDamage();
         }
-    };
+    }
 
     public executeFloorDamage() {
         const floorDamage = Math.floor(this.basicFloorDamage() * this.fdr);
@@ -824,30 +824,30 @@ export class Game_Actor extends Game_Battler {
         if (realDamage > 0) {
             this.performMapDamage();
         }
-    };
+    }
 
     public basicFloorDamage() {
         return 10;
-    };
+    }
 
     public maxFloorDamage() {
         return $dataSystem.optFloorDeath ? this.hp : Math.max(this.hp - 1, 0);
-    };
+    }
 
     public performMapDamage() {
         if (!$gameParty.inBattle()) {
             $gameScreen.startFlashForDamage();
         }
-    };
+    }
 
     public clearActions() {
         Game_Battler.prototype.clearActions.call(this);
         this._actionInputIndex = 0;
-    };
+    }
 
     public inputtingAction() {
         return this.action(this._actionInputIndex);
-    };
+    }
 
     public selectNextCommand() {
         if (this._actionInputIndex < this.numActions() - 1) {
@@ -856,7 +856,7 @@ export class Game_Actor extends Game_Battler {
         } else {
             return false;
         }
-    };
+    }
 
     public selectPreviousCommand() {
         if (this._actionInputIndex > 0) {
@@ -865,7 +865,7 @@ export class Game_Actor extends Game_Battler {
         } else {
             return false;
         }
-    };
+    }
 
     public lastSkill() {
         if ($gameParty.inBattle()) {
@@ -873,37 +873,37 @@ export class Game_Actor extends Game_Battler {
         } else {
             return this.lastMenuSkill();
         }
-    };
+    }
 
     public lastMenuSkill() {
         return this._lastMenuSkill.object();
-    };
+    }
 
     public setLastMenuSkill(skill) {
         this._lastMenuSkill.setObject(skill);
-    };
+    }
 
     public lastBattleSkill() {
         return this._lastBattleSkill.object();
-    };
+    }
 
     public setLastBattleSkill(skill) {
         this._lastBattleSkill.setObject(skill);
-    };
+    }
 
     public lastCommandSymbol() {
         return this._lastCommandSymbol;
-    };
+    }
 
     public setLastCommandSymbol(symbol) {
         this._lastCommandSymbol = symbol;
-    };
+    }
 
     public testEscape(item) {
         return item.effects.some(
             effect => effect && effect.code === Game_Action.EFFECT_SPECIAL
         );
-    };
+    }
 
     public meetsUsableItemConditions(item) {
         if ($gameParty.inBattle()) {
@@ -912,7 +912,7 @@ export class Game_Actor extends Game_Battler {
             }
         }
         return Game_BattlerBase.prototype.meetsUsableItemConditions.call(this,item);
-    };
+    }
 
     public onEscapeFailure() {
         if (BattleManager.isTpb()) {
@@ -920,6 +920,6 @@ export class Game_Actor extends Game_Battler {
         }
         this.clearActions();
         this.requestMotionRefresh();
-    };
+    }
 
 }

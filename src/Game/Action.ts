@@ -43,12 +43,12 @@ export class Game_Action {
         this._forcing = forcing ;
         this.setSubject(subject);
         this.clear();
-    };
+    }
 
     public clear() {
         this._item = new Game_Item();
         this._targetIndex = -1;
-    };
+    }
 
     public setSubject(subject) {
         if (subject.isActor()) {
@@ -58,7 +58,7 @@ export class Game_Action {
             this._subjectEnemyIndex = subject.index();
             this._subjectActorId = 0;
         }
-    };
+    }
 
     public subject() {
         if (this._subjectActorId > 0) {
@@ -66,15 +66,15 @@ export class Game_Action {
         } else {
             return $gameTroop.members()[this._subjectEnemyIndex];
         }
-    };
+    }
 
     public friendsUnit() {
         return this.subject().friendsUnit();
-    };
+    }
 
     public opponentsUnit() {
         return this.subject().opponentsUnit();
-    };
+    }
 
     public setEnemyAction(action) {
         if (action) {
@@ -82,43 +82,43 @@ export class Game_Action {
         } else {
             this.clear();
         }
-    };
+    }
 
     public setAttack() {
         this.setSkill(this.subject().attackSkillId());
-    };
+    }
 
     public setGuard() {
         this.setSkill(this.subject().guardSkillId());
-    };
+    }
 
     public setSkill(skillId) {
         this._item.setObject($dataSkills[skillId]);
-    };
+    }
 
     public setItem(itemId) {
         this._item.setObject($dataItems[itemId]);
-    };
+    }
 
     public setItemObject(object) {
         this._item.setObject(object);
-    };
+    }
 
     public setTarget(targetIndex) {
         this._targetIndex = targetIndex;
-    };
+    }
 
     public item() {
         return this._item.object();
-    };
+    }
 
     public isSkill() {
         return this._item.isSkill();
-    };
+    }
 
     public isItem() {
         return this._item.isItem();
-    };
+    }
 
     public numRepeats() {
         let repeats = this.item().repeats;
@@ -126,107 +126,107 @@ export class Game_Action {
             repeats += this.subject().attackTimesAdd();
         }
         return Math.floor(repeats);
-    };
+    }
 
     public checkItemScope(list) {
         return list.includes(this.item().scope);
-    };
+    }
 
     public isForOpponent() {
         return this.checkItemScope([1, 2, 3, 4, 5, 6, 14]);
-    };
+    }
 
     public isForFriend() {
         return this.checkItemScope([7, 8, 9, 10, 11, 12, 13, 14]);
-    };
+    }
 
     public isForEveryone() {
         return this.checkItemScope([14]);
-    };
+    }
 
     public isForAliveFriend() {
         return this.checkItemScope([7, 8, 11, 14]);
-    };
+    }
 
     public isForDeadFriend() {
         return this.checkItemScope([9, 10]);
-    };
+    }
 
     public isForUser() {
         return this.checkItemScope([11]);
-    };
+    }
 
     public isForOne() {
         return this.checkItemScope([1, 3, 7, 9, 11, 12]);
-    };
+    }
 
     public isForRandom() {
         return this.checkItemScope([3, 4, 5, 6]);
-    };
+    }
 
     public isForAll() {
         return this.checkItemScope([2, 8, 10, 13, 14]);
-    };
+    }
 
     public needsSelection() {
         return this.checkItemScope([1, 7, 9, 12]);
-    };
+    }
 
     public numTargets() {
         return this.isForRandom() ? this.item().scope - 2 : 0;
-    };
+    }
 
     public checkDamageType(list) {
         return list.includes(this.item().damage.type);
-    };
+    }
 
     public isHpEffect() {
         return this.checkDamageType([1, 3, 5]);
-    };
+    }
 
     public isMpEffect() {
         return this.checkDamageType([2, 4, 6]);
-    };
+    }
 
     public isDamage() {
         return this.checkDamageType([1, 2]);
-    };
+    }
 
     public isRecover() {
         return this.checkDamageType([3, 4]);
-    };
+    }
 
     public isDrain() {
         return this.checkDamageType([5, 6]);
-    };
+    }
 
     public isHpRecover() {
         return this.checkDamageType([3]);
-    };
+    }
 
     public isMpRecover() {
         return this.checkDamageType([4]);
-    };
+    }
 
     public isCertainHit() {
         return this.item().hitType === Game_Action.HITTYPE_CERTAIN;
-    };
+    }
 
     public isPhysical() {
         return this.item().hitType === Game_Action.HITTYPE_PHYSICAL;
-    };
+    }
 
     public isMagical() {
         return this.item().hitType === Game_Action.HITTYPE_MAGICAL;
-    };
+    }
 
     public isAttack() {
         return this.item() === $dataSkills[this.subject().attackSkillId()];
-    };
+    }
 
     public isGuard() {
         return this.item() === $dataSkills[this.subject().guardSkillId()];
-    };
+    }
 
     public isMagicSkill() {
         if (this.isSkill()) {
@@ -234,7 +234,7 @@ export class Game_Action {
         } else {
             return false;
         }
-    };
+    }
 
     public decideRandomTarget() {
         let target;
@@ -250,21 +250,21 @@ export class Game_Action {
         } else {
             this.clear();
         }
-    };
+    }
 
     public setConfusion() {
         this.setAttack();
-    };
+    }
 
     public prepare() {
         if (this.subject().isConfused() && !this._forcing) {
             this.setConfusion();
         }
-    };
+    }
 
     public isValid() {
         return (this._forcing && this.item()) || this.subject().canUse(this.item());
-    };
+    }
 
     public speed() {
         const agi = this.subject().agi;
@@ -276,7 +276,7 @@ export class Game_Action {
             speed += this.subject().attackSpeed();
         }
         return speed;
-    };
+    }
 
     public makeTargets() {
         const targets = [];
@@ -290,7 +290,7 @@ export class Game_Action {
             targets.push(...this.targetsForFriends());
         }
         return this.repeatTargets(targets);
-    };
+    }
 
     public repeatTargets(targets) {
         const repeatedTargets = [];
@@ -303,7 +303,7 @@ export class Game_Action {
             }
         }
         return repeatedTargets;
-    };
+    }
 
     public confusionTarget() {
         switch (this.subject().confusionLevel()) {
@@ -317,13 +317,13 @@ export class Game_Action {
             default:
                 return this.friendsUnit().randomTarget();
         }
-    };
+    }
 
     public targetsForEveryone() {
         const opponentMembers = this.opponentsUnit().aliveMembers();
         const friendMembers = this.friendsUnit().aliveMembers();
         return opponentMembers.concat(friendMembers);
-    };
+    }
 
     public targetsForOpponents() {
         const unit = this.opponentsUnit();
@@ -332,7 +332,7 @@ export class Game_Action {
         } else {
             return this.targetsForAlive(unit);
         }
-    };
+    }
 
     public targetsForFriends() {
         const unit = this.friendsUnit();
@@ -345,7 +345,7 @@ export class Game_Action {
         } else {
             return this.targetsForDeadAndAlive(unit);
         }
-    };
+    }
 
     public randomTargets(unit) {
         const targets = [];
@@ -353,7 +353,7 @@ export class Game_Action {
             targets.push(unit.randomTarget());
         }
         return targets;
-    };
+    }
 
     public targetsForDead(unit) {
         if (this.isForOne()) {
@@ -361,7 +361,7 @@ export class Game_Action {
         } else {
             return unit.deadMembers();
         }
-    };
+    }
 
     public targetsForAlive(unit) {
         if (this.isForOne()) {
@@ -373,7 +373,7 @@ export class Game_Action {
         } else {
             return unit.aliveMembers();
         }
-    };
+    }
 
     public targetsForDeadAndAlive(unit) {
         if (this.isForOne()) {
@@ -381,7 +381,7 @@ export class Game_Action {
         } else {
             return unit.members();
         }
-    };
+    }
 
     public evaluate() {
         let value = 0;
@@ -399,7 +399,7 @@ export class Game_Action {
             value += Math.random();
         }
         return value;
-    };
+    }
 
     public itemTargetCandidates() {
         if (!this.isValid()) {
@@ -413,7 +413,7 @@ export class Game_Action {
         } else {
             return this.friendsUnit().aliveMembers();
         }
-    };
+    }
 
     public evaluateWithTarget(target) {
         if (this.isHpEffect()) {
@@ -425,7 +425,7 @@ export class Game_Action {
                 return recovery / target.mhp;
             }
         }
-    };
+    }
 
     public testApply(target) {
         return (
@@ -435,7 +435,7 @@ export class Game_Action {
                 (this.isMpRecover() && target.mp < target.mmp) ||
                 this.hasItemAnyValidEffects(target))
         );
-    };
+    }
 
     public testLifeAndDeath(target) {
         if (this.isForOpponent() || this.isForAliveFriend()) {
@@ -445,13 +445,13 @@ export class Game_Action {
         } else {
             return true;
         }
-    };
+    }
 
     public hasItemAnyValidEffects(target) {
         return this.item().effects.some(effect =>
             this.testItemEffect(target, effect)
         );
-    };
+    }
 
     public testItemEffect(target, effect) {
         switch (effect.code) {
@@ -480,7 +480,7 @@ export class Game_Action {
             default:
                 return true;
         }
-    };
+    }
 
     public itemCnt(target) {
         if (this.isPhysical() && target.canMove()) {
@@ -488,7 +488,7 @@ export class Game_Action {
         } else {
             return 0;
         }
-    };
+    }
 
     public itemMrf(target) {
         if (this.isMagical()) {
@@ -496,7 +496,7 @@ export class Game_Action {
         } else {
             return 0;
         }
-    };
+    }
 
     public itemHit(...args /*target*/) {
         const successRate = this.item().successRate;
@@ -505,7 +505,7 @@ export class Game_Action {
         } else {
             return successRate * 0.01;
         }
-    };
+    }
 
     public itemEva(target) {
         if (this.isPhysical()) {
@@ -515,13 +515,13 @@ export class Game_Action {
         } else {
             return 0;
         }
-    };
+    }
 
     public itemCri(target) {
         return this.item().damage.critical
             ? this.subject().cri * (1 - target.cev)
             : 0;
-    };
+    }
 
     public apply(target) {
         const result = target.result();
@@ -544,7 +544,7 @@ export class Game_Action {
             this.applyItemUserEffect(target);
         }
         this.updateLastTarget(target);
-    };
+    }
 
     public makeDamageValue(target, critical) {
         const item = this.item();
@@ -566,7 +566,7 @@ export class Game_Action {
         value = this.applyGuard(value, target);
         value = Math.round(value);
         return value;
-    };
+    }
 
     public evalDamageFormula(target) {
         try {
@@ -583,7 +583,7 @@ export class Game_Action {
         } catch (e) {
             return 0;
         }
-    };
+    }
 
     public calcElementRate(target) {
         if (this.item().damage.elementId < 0) {
@@ -591,7 +591,7 @@ export class Game_Action {
         } else {
             return target.elementRate(this.item().damage.elementId);
         }
-    };
+    }
 
     public elementsMaxRate(target, elements) {
         if (elements.length > 0) {
@@ -600,21 +600,21 @@ export class Game_Action {
         } else {
             return 1;
         }
-    };
+    }
 
     public applyCritical(damage) {
         return damage * 3;
-    };
+    }
 
     public applyVariance(damage, variance) {
         const amp = Math.floor(Math.max((Math.abs(damage) * variance) / 100, 0));
         const v = Math.randomInt(amp + 1) + Math.randomInt(amp + 1) - amp;
         return damage >= 0 ? damage + v : damage - v;
-    };
+    }
 
     public applyGuard(damage, target) {
         return damage / (damage > 0 && target.isGuard() ? 2 * target.grd : 1);
-    };
+    }
 
     public executeDamage(target, value) {
         const result = target.result();
@@ -627,7 +627,7 @@ export class Game_Action {
         if (this.isMpEffect()) {
             this.executeMpDamage(target, value);
         }
-    };
+    }
 
     public executeHpDamage(target, value) {
         if (this.isDrain()) {
@@ -639,7 +639,7 @@ export class Game_Action {
             target.onDamage(value);
         }
         this.gainDrainedHp(value);
-    };
+    }
 
     public executeMpDamage(target, value) {
         if (!this.isMpRecover()) {
@@ -650,7 +650,7 @@ export class Game_Action {
         }
         target.gainMp(-value);
         this.gainDrainedMp(value);
-    };
+    }
 
     public gainDrainedHp(value) {
         if (this.isDrain()) {
@@ -660,7 +660,7 @@ export class Game_Action {
             }
             gainTarget.gainHp(value);
         }
-    };
+    }
 
     public gainDrainedMp(value) {
         if (this.isDrain()) {
@@ -670,7 +670,7 @@ export class Game_Action {
             }
             gainTarget.gainMp(value);
         }
-    };
+    }
 
     public applyItemEffect(target, effect) {
         switch (effect.code) {
@@ -714,7 +714,7 @@ export class Game_Action {
                 this.itemEffectCommonEvent(target, effect);
                 break;
         }
-    };
+    }
 
     public itemEffectRecoverHp(target, effect) {
         let value = (target.mhp * effect.value1 + effect.value2) * target.rec;
@@ -726,7 +726,7 @@ export class Game_Action {
             target.gainHp(value);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectRecoverMp(target, effect) {
         let value = (target.mmp * effect.value1 + effect.value2) * target.rec;
@@ -738,7 +738,7 @@ export class Game_Action {
             target.gainMp(value);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectGainTp(target, effect) {
         let value = Math.floor(effect.value1);
@@ -746,7 +746,7 @@ export class Game_Action {
             target.gainTp(value);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectAddState(target, effect) {
         if (effect.dataId === 0) {
@@ -754,7 +754,7 @@ export class Game_Action {
         } else {
             this.itemEffectAddNormalState(target, effect);
         }
-    };
+    }
 
     public itemEffectAddAttackState(target, effect) {
         for (const stateId of this.subject().attackStates()) {
@@ -767,7 +767,7 @@ export class Game_Action {
                 this.makeSuccess(target);
             }
         }
-    };
+    }
 
     public itemEffectAddNormalState(target, effect) {
         let chance = effect.value1;
@@ -779,7 +779,7 @@ export class Game_Action {
             target.addState(effect.dataId);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectRemoveState(target, effect) {
         let chance = effect.value1;
@@ -787,12 +787,12 @@ export class Game_Action {
             target.removeState(effect.dataId);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectAddBuff(target, effect) {
         target.addBuff(effect.dataId, effect.value1);
         this.makeSuccess(target);
-    };
+    }
 
     public itemEffectAddDebuff(target, effect) {
         let chance = target.debuffRate(effect.dataId) * this.lukEffectRate(target);
@@ -800,57 +800,57 @@ export class Game_Action {
             target.addDebuff(effect.dataId, effect.value1);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectRemoveBuff(target, effect) {
         if (target.isBuffAffected(effect.dataId)) {
             target.removeBuff(effect.dataId);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectRemoveDebuff(target, effect) {
         if (target.isDebuffAffected(effect.dataId)) {
             target.removeBuff(effect.dataId);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectSpecial(target, effect) {
         if (effect.dataId === Game_Action.SPECIAL_EFFECT_ESCAPE) {
             target.escape();
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectGrow(target, effect) {
         target.addParam(effect.dataId, Math.floor(effect.value1));
         this.makeSuccess(target);
-    };
+    }
 
     public itemEffectLearnSkill(target, effect) {
         if (target.isActor()) {
             target.learnSkill(effect.dataId);
             this.makeSuccess(target);
         }
-    };
+    }
 
     public itemEffectCommonEvent(...args /*target, effect*/) {
         //
-    };
+    }
 
     public makeSuccess(target) {
         target.result().success = true;
-    };
+    }
 
     public applyItemUserEffect(...args/*target*/) {
         const value = Math.floor(this.item().tpGain * this.subject().tcr);
         this.subject().gainSilentTp(value);
-    };
+    }
 
     public lukEffectRate(target) {
         return Math.max(1.0 + (this.subject().luk - target.luk) * 0.001, 0.0);
-    };
+    }
 
     public applyGlobal() {
         for (const effect of this.item().effects) {
@@ -860,7 +860,7 @@ export class Game_Action {
         }
         this.updateLastUsed();
         this.updateLastSubject();
-    };
+    }
 
     public updateLastUsed() {
         const item = this.item();
@@ -869,7 +869,7 @@ export class Game_Action {
         } else if (DataManager.isItem(item)) {
             $gameTemp.setLastUsedItemId(item.id);
         }
-    };
+    }
 
     public updateLastSubject() {
         const subject = this.subject();
@@ -878,7 +878,7 @@ export class Game_Action {
         } else {
             $gameTemp.setLastSubjectEnemyIndex(subject.index() + 1);
         }
-    };
+    }
 
     public updateLastTarget(target) {
         if (target.isActor()) {
@@ -886,7 +886,7 @@ export class Game_Action {
         } else {
             $gameTemp.setLastTargetEnemyIndex(target.index() + 1);
         }
-    };
+    }
 
 }
 

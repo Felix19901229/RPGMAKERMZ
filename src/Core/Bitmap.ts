@@ -237,7 +237,7 @@ export class Bitmap {
      * @param {string} url - The image url of the texture.
      * @returns {Bitmap} The new bitmap object.
      */
-    static load(url) {
+    static load(url) :Bitmap{
         const bitmap = Object.create(Bitmap.prototype);
         bitmap.initialize();
         bitmap._url = url;
@@ -440,9 +440,8 @@ export class Bitmap {
      * @param {string} color1 - The gradient starting color.
      * @param {string} color2 - The gradient ending color.
      * @param {boolean} vertical - Whether the gradient should be draw as vertical or not.
-     */public gradientFillRect(
-        x, y, width, height, color1, color2, vertical
-    ) {
+     */
+    public gradientFillRect(x, y, width, height, color1, color2, vertical?) {
         const context = this.context;
         const x1 = vertical ? x : x + width;
         const y1 = vertical ? y + height : y;

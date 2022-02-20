@@ -506,11 +506,11 @@ declare type Encounter = {
     /**
      * 敌群ID
     */
-    troopId: string;
+    troopId: number;
     /**
      * 权重
     */
-    weight: string;
+    weight: number;
     /**
      * 区域设置
      * [] 全部 [x,Y,Width]

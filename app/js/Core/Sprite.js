@@ -1,4 +1,4 @@
-import { Rectangle } from "./index.js";
+import { ColorFilter, Rectangle } from "./index.js";
 export class Sprite extends PIXI.Sprite {
     static _emptyBaseTexture = null;
     static _counter = 0;
@@ -15,6 +15,9 @@ export class Sprite extends PIXI.Sprite {
     _refreshFrame;
     ax;
     ay;
+    dy;
+    ry;
+    z;
     get bitmap() {
         return this._bitmap;
     }
@@ -84,7 +87,7 @@ export class Sprite extends PIXI.Sprite {
         this._hidden = false;
         this._onBitmapChange();
     }
-    destroy() {
+    destroy(...args) {
         const options = { children: true, texture: true };
         PIXI.Sprite.prototype.destroy.call(this, options);
     }

@@ -480,6 +480,8 @@ export class Tilemap extends PIXI.Container {
     _needsBitmapsUpdate;
     _needsRepaint;
     children = [];
+    tileWidth;
+    tileHeight;
     get width() {
         return this._width;
     }

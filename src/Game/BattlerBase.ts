@@ -43,7 +43,7 @@ export class Game_BattlerBase {
     _hidden: boolean;
     _paramPlus: number[];
     _states: number[];
-    _stateTurns: {[stateId:number]:number};
+    _stateTurns: {[stateId:number]:number}
     _buffs: number[];
     _buffTurns: number[];
 
@@ -240,7 +240,7 @@ export class Game_BattlerBase {
 
     public initialize(...args) {
         this.initMembers();
-    };
+    }
 
     public initMembers() {
         this._hp = 1;
@@ -250,43 +250,43 @@ export class Game_BattlerBase {
         this.clearParamPlus();
         this.clearStates();
         this.clearBuffs();
-    };
+    }
 
     public clearParamPlus() {
         this._paramPlus = [0, 0, 0, 0, 0, 0, 0, 0];
-    };
+    }
 
     public clearStates() {
         this._states = [];
-        this._stateTurns = {};
-    };
+        this._stateTurns = {}
+    }
 
     public eraseState(stateId) {
         this._states.remove(stateId);
         delete this._stateTurns[stateId];
-    };
+    }
 
     public isStateAffected(stateId) {
         return this._states.includes(stateId);
-    };
+    }
 
     public isDeathStateAffected() {
         return this.isStateAffected(this.deathStateId());
-    };
+    }
 
     public deathStateId() {
         return 1;
-    };
+    }
 
     public resetStateCounts(stateId) {
         const state = $dataStates[stateId];
         const variance = 1 + Math.max(state.maxTurns - state.minTurns, 0);
         this._stateTurns[stateId] = state.minTurns + Math.randomInt(variance);
-    };
+    }
 
     public isStateExpired(stateId) {
         return this._stateTurns[stateId] === 0;
-    };
+    }
 
     public updateStateTurns() {
         for (const stateId of this._states) {
@@ -294,67 +294,67 @@ export class Game_BattlerBase {
                 this._stateTurns[stateId]--;
             }
         }
-    };
+    }
 
     public clearBuffs() {
         this._buffs = [0, 0, 0, 0, 0, 0, 0, 0];
         this._buffTurns = [0, 0, 0, 0, 0, 0, 0, 0];
-    };
+    }
 
     public eraseBuff(paramId) {
         this._buffs[paramId] = 0;
         this._buffTurns[paramId] = 0;
-    };
+    }
 
     public buffLength() {
         return this._buffs.length;
-    };
+    }
 
     public buff(paramId) {
         return this._buffs[paramId];
-    };
+    }
 
     public isBuffAffected(paramId) {
         return this._buffs[paramId] > 0;
-    };
+    }
 
     public isDebuffAffected(paramId) {
         return this._buffs[paramId] < 0;
-    };
+    }
 
     public isBuffOrDebuffAffected(paramId) {
         return this._buffs[paramId] !== 0;
-    };
+    }
 
     public isMaxBuffAffected(paramId) {
         return this._buffs[paramId] === 2;
-    };
+    }
 
     public isMaxDebuffAffected(paramId) {
         return this._buffs[paramId] === -2;
-    };
+    }
 
     public increaseBuff(paramId) {
         if (!this.isMaxBuffAffected(paramId)) {
             this._buffs[paramId]++;
         }
-    };
+    }
 
     public decreaseBuff(paramId) {
         if (!this.isMaxDebuffAffected(paramId)) {
             this._buffs[paramId]--;
         }
-    };
+    }
 
     public overwriteBuffTurns(paramId, turns) {
         if (this._buffTurns[paramId] < turns) {
             this._buffTurns[paramId] = turns;
         }
-    };
+    }
 
     public isBuffExpired(paramId) {
         return this._buffTurns[paramId] === 0;
-    };
+    }
 
     public updateBuffTurns() {
         for (let i = 0; i < this._buffTurns.length; i++) {
@@ -362,29 +362,29 @@ export class Game_BattlerBase {
                 this._buffTurns[i]--;
             }
         }
-    };
+    }
 
     public die() {
         this._hp = 0;
         this.clearStates();
         this.clearBuffs();
-    };
+    }
 
     public revive() {
         if (this._hp === 0) {
             this._hp = 1;
         }
-    };
+    }
 
     public states() {
         return this._states.map(id => $dataStates[id]);
-    };
+    }
 
     public stateIcons() {
         return this.states()
             .map(state => state.iconIndex)
             .filter(iconIndex => iconIndex > 0);
-    };
+    }
 
     public buffIcons() {
         const icons = [];
@@ -394,7 +394,7 @@ export class Game_BattlerBase {
             }
         }
         return icons;
-    };
+    }
 
     public buffIconIndex(buffLevel, paramId) {
         if (buffLevel > 0) {
@@ -406,58 +406,58 @@ export class Game_BattlerBase {
         } else {
             return 0;
         }
-    };
+    }
 
     public allIcons() {
         return this.stateIcons().concat(this.buffIcons());
-    };
+    }
 
     public traitObjects() {
         // Returns an array of the all objects having traits. States only here.
         return this.states();
-    };
+    }
 
     public allTraits() {
         return this.traitObjects().reduce((r, obj) => r.concat(obj.traits), []);
-    };
+    }
 
     public traits(code) {
         return this.allTraits().filter(trait => trait.code === code);
-    };
+    }
 
     public traitsWithId(code, id) {
         return this.allTraits().filter(
             trait => trait.code === code && trait.dataId === id
         );
-    };
+    }
 
     public traitsPi(code, id) {
         return this.traitsWithId(code, id).reduce((r, trait) => r * trait.value, 1);
-    };
+    }
 
     public traitsSum(code, id) {
         return this.traitsWithId(code, id).reduce((r, trait) => r + trait.value, 0);
-    };
+    }
 
     public traitsSumAll(code) {
         return this.traits(code).reduce((r, trait) => r + trait.value, 0);
-    };
+    }
 
     public traitsSet(code) {
         return this.traits(code).reduce((r, trait) => r.concat(trait.dataId), []);
-    };
+    }
 
     public paramBase(...args/*paramId*/) {
         return 0;
-    };
+    }
 
     public paramPlus(paramId) {
         return this._paramPlus[paramId];
-    };
+    }
 
     public paramBasePlus(paramId) {
         return Math.max(0, this.paramBase(paramId) + this.paramPlus(paramId));
-    };
+    }
 
     public paramMin(paramId) {
         if (paramId === 0) {
@@ -465,19 +465,19 @@ export class Game_BattlerBase {
         } else {
             return 0;
         }
-    };
+    }
 
     public paramMax(...args/*paramId*/) {
         return Infinity;
-    };
+    }
 
     public paramRate(paramId) {
         return this.traitsPi(Game_BattlerBase.TRAIT_PARAM, paramId);
-    };
+    }
 
     public paramBuffRate(paramId) {
         return this._buffs[paramId] * 0.25 + 1.0;
-    };
+    }
 
     public param(paramId) {
         const value =
@@ -487,166 +487,166 @@ export class Game_BattlerBase {
         const maxValue = this.paramMax(paramId);
         const minValue = this.paramMin(paramId);
         return Math.round(value.clamp(minValue, maxValue));
-    };
+    }
 
     public xparam(xparamId) {
         return this.traitsSum(Game_BattlerBase.TRAIT_XPARAM, xparamId);
-    };
+    }
 
     public sparam(sparamId) {
         return this.traitsPi(Game_BattlerBase.TRAIT_SPARAM, sparamId);
-    };
+    }
 
     public elementRate(elementId) {
         return this.traitsPi(Game_BattlerBase.TRAIT_ELEMENT_RATE, elementId);
-    };
+    }
 
     public debuffRate(paramId) {
         return this.traitsPi(Game_BattlerBase.TRAIT_DEBUFF_RATE, paramId);
-    };
+    }
 
     public stateRate(stateId) {
         return this.traitsPi(Game_BattlerBase.TRAIT_STATE_RATE, stateId);
-    };
+    }
 
     public stateResistSet() {
         return this.traitsSet(Game_BattlerBase.TRAIT_STATE_RESIST);
-    };
+    }
 
     public isStateResist(stateId) {
         return this.stateResistSet().includes(stateId);
-    };
+    }
 
     public attackElements() {
         return this.traitsSet(Game_BattlerBase.TRAIT_ATTACK_ELEMENT);
-    };
+    }
 
     public attackStates() {
         return this.traitsSet(Game_BattlerBase.TRAIT_ATTACK_STATE);
-    };
+    }
 
     public attackStatesRate(stateId) {
         return this.traitsSum(Game_BattlerBase.TRAIT_ATTACK_STATE, stateId);
-    };
+    }
 
     public attackSpeed() {
         return this.traitsSumAll(Game_BattlerBase.TRAIT_ATTACK_SPEED);
-    };
+    }
 
     public attackTimesAdd() {
         return Math.max(this.traitsSumAll(Game_BattlerBase.TRAIT_ATTACK_TIMES), 0);
-    };
+    }
 
     public attackSkillId() {
         const set = this.traitsSet(Game_BattlerBase.TRAIT_ATTACK_SKILL);
         return set.length > 0 ? Math.max(...set) : 1;
-    };
+    }
 
     public addedSkillTypes() {
         return this.traitsSet(Game_BattlerBase.TRAIT_STYPE_ADD);
-    };
+    }
 
     public isSkillTypeSealed(stypeId) {
         return this.traitsSet(Game_BattlerBase.TRAIT_STYPE_SEAL).includes(stypeId);
-    };
+    }
 
     public addedSkills() {
         return this.traitsSet(Game_BattlerBase.TRAIT_SKILL_ADD);
-    };
+    }
 
     public isSkillSealed(skillId) {
         return this.traitsSet(Game_BattlerBase.TRAIT_SKILL_SEAL).includes(skillId);
-    };
+    }
 
     public isEquipWtypeOk(wtypeId) {
         return this.traitsSet(Game_BattlerBase.TRAIT_EQUIP_WTYPE).includes(wtypeId);
-    };
+    }
 
     public isEquipAtypeOk(atypeId) {
         return this.traitsSet(Game_BattlerBase.TRAIT_EQUIP_ATYPE).includes(atypeId);
-    };
+    }
 
     public isEquipTypeLocked(etypeId) {
         return this.traitsSet(Game_BattlerBase.TRAIT_EQUIP_LOCK).includes(etypeId);
-    };
+    }
 
     public isEquipTypeSealed(etypeId) {
         return this.traitsSet(Game_BattlerBase.TRAIT_EQUIP_SEAL).includes(etypeId);
-    };
+    }
 
     public slotType() {
         const set = this.traitsSet(Game_BattlerBase.TRAIT_SLOT_TYPE);
         return set.length > 0 ? Math.max(...set) : 0;
-    };
+    }
 
     public isDualWield() {
         return this.slotType() === 1;
-    };
+    }
 
     public actionPlusSet() {
         return this.traits(Game_BattlerBase.TRAIT_ACTION_PLUS).map(
             trait => trait.value
         );
-    };
+    }
 
     public specialFlag(flagId) {
         return this.traits(Game_BattlerBase.TRAIT_SPECIAL_FLAG).some(
             trait => trait.dataId === flagId
         );
-    };
+    }
 
     public collapseType() {
         const set = this.traitsSet(Game_BattlerBase.TRAIT_COLLAPSE_TYPE);
         return set.length > 0 ? Math.max(...set) : 0;
-    };
+    }
 
     public partyAbility(abilityId) {
         return this.traits(Game_BattlerBase.TRAIT_PARTY_ABILITY).some(
             trait => trait.dataId === abilityId
         );
-    };
+    }
 
     public isAutoBattle() {
         return this.specialFlag(Game_BattlerBase.FLAG_ID_AUTO_BATTLE);
-    };
+    }
 
     public isGuard() {
         return this.specialFlag(Game_BattlerBase.FLAG_ID_GUARD) && this.canMove();
-    };
+    }
 
     public isSubstitute() {
         return (
             this.specialFlag(Game_BattlerBase.FLAG_ID_SUBSTITUTE) && this.canMove()
         );
-    };
+    }
 
     public isPreserveTp() {
         return this.specialFlag(Game_BattlerBase.FLAG_ID_PRESERVE_TP);
-    };
+    }
 
     public addParam(paramId, value) {
         this._paramPlus[paramId] += value;
         this.refresh();
-    };
+    }
 
     public setHp(hp) {
         this._hp = hp;
         this.refresh();
-    };
+    }
 
     public setMp(mp) {
         this._mp = mp;
         this.refresh();
-    };
+    }
 
     public setTp(tp) {
         this._tp = tp;
         this.refresh();
-    };
+    }
 
     public maxTp() {
         return 100;
-    };
+    }
 
     public refresh() {
         for (const stateId of this.stateResistSet()) {
@@ -655,85 +655,85 @@ export class Game_BattlerBase {
         this._hp = this._hp.clamp(0, this.mhp);
         this._mp = this._mp.clamp(0, this.mmp);
         this._tp = this._tp.clamp(0, this.maxTp());
-    };
+    }
 
     public recoverAll() {
         this.clearStates();
         this._hp = this.mhp;
         this._mp = this.mmp;
-    };
+    }
 
     public hpRate() {
         return this.hp / this.mhp;
-    };
+    }
 
     public mpRate() {
         return this.mmp > 0 ? this.mp / this.mmp : 0;
-    };
+    }
 
     public tpRate() {
         return this.tp / this.maxTp();
-    };
+    }
 
     public hide() {
         this._hidden = true;
-    };
+    }
 
     public appear() {
         this._hidden = false;
-    };
+    }
 
     public isHidden() {
         return this._hidden;
-    };
+    }
 
     public isAppeared() {
         return !this.isHidden();
-    };
+    }
 
     public isDead() {
         return this.isAppeared() && this.isDeathStateAffected();
-    };
+    }
 
     public isAlive() {
         return this.isAppeared() && !this.isDeathStateAffected();
-    };
+    }
 
     public isDying() {
         return this.isAlive() && this._hp < this.mhp / 4;
-    };
+    }
 
     public isRestricted() {
         return this.isAppeared() && this.restriction() > 0;
-    };
+    }
 
     public canInput() {
         // prettier-ignore
         return this.isAppeared() && this.isActor() &&
             !this.isRestricted() && !this.isAutoBattle();
-    };
+    }
 
     public canMove() {
         return this.isAppeared() && this.restriction() < 4;
-    };
+    }
 
     public isConfused() {
         return (
             this.isAppeared() && this.restriction() >= 1 && this.restriction() <= 3
         );
-    };
+    }
 
     public confusionLevel() {
         return this.isConfused() ? this.restriction() : 0;
-    };
+    }
 
     public isActor() {
         return false;
-    };
+    }
 
     public isEnemy() {
         return false;
-    };
+    }
 
     public sortStates() {
         this._states.sort((a, b) => {
@@ -744,12 +744,12 @@ export class Game_BattlerBase {
             }
             return a - b;
         });
-    };
+    }
 
     public restriction() {
         const restrictions = this.states().map(state => state.restriction);
         return Math.max(0, ...restrictions);
-    };
+    }
 
     public addNewState(stateId) {
         if (stateId === this.deathStateId()) {
@@ -761,11 +761,11 @@ export class Game_BattlerBase {
         if (!restricted && this.isRestricted()) {
             this.onRestrict();
         }
-    };
+    }
 
     public onRestrict() {
         //
-    };
+    }
 
     public mostImportantStateText() {
         for (const state of this.states()) {
@@ -774,7 +774,7 @@ export class Game_BattlerBase {
             }
         }
         return "";
-    };
+    }
 
     public stateMotionIndex() {
         const states = this.states();
@@ -783,7 +783,7 @@ export class Game_BattlerBase {
         } else {
             return 0;
         }
-    };
+    }
 
     public stateOverlayIndex() {
         const states = this.states();
@@ -792,31 +792,31 @@ export class Game_BattlerBase {
         } else {
             return 0;
         }
-    };
+    }
 
     public isSkillWtypeOk(...args/*skill*/) {
         return true;
-    };
+    }
 
     public skillMpCost(skill) {
         return Math.floor(skill.mpCost * this.mcr);
-    };
+    }
 
     public skillTpCost(skill) {
         return skill.tpCost;
-    };
+    }
 
     public canPaySkillCost(skill) {
         return (
             this._tp >= this.skillTpCost(skill) &&
             this._mp >= this.skillMpCost(skill)
         );
-    };
+    }
 
     public paySkillCost(skill) {
         this._mp -= this.skillMpCost(skill);
         this._tp -= this.skillTpCost(skill);
-    };
+    }
 
     public isOccasionOk(item) {
         if ($gameParty.inBattle()) {
@@ -824,11 +824,11 @@ export class Game_BattlerBase {
         } else {
             return item.occasion === 0 || item.occasion === 2;
         }
-    };
+    }
 
     public meetsUsableItemConditions(item) {
         return this.canMove() && this.isOccasionOk(item);
-    };
+    }
 
     public meetsSkillConditions(skill) {
         return (
@@ -838,11 +838,11 @@ export class Game_BattlerBase {
             !this.isSkillSealed(skill.id) &&
             !this.isSkillTypeSealed(skill.stypeId)
         );
-    };
+    }
 
     public meetsItemConditions(item) {
         return this.meetsUsableItemConditions(item) && $gameParty.hasItem(item);
-    };
+    }
 
     public canUse(item) {
         if (!item) {
@@ -854,7 +854,7 @@ export class Game_BattlerBase {
         } else {
             return false;
         }
-    };
+    }
 
     public canEquip(item) {
         if (!item) {
@@ -866,32 +866,32 @@ export class Game_BattlerBase {
         } else {
             return false;
         }
-    };
+    }
 
     public canEquipWeapon(item) {
         return (
             this.isEquipWtypeOk(item.wtypeId) &&
             !this.isEquipTypeSealed(item.etypeId)
         );
-    };
+    }
 
     public canEquipArmor(item) {
         return (
             this.isEquipAtypeOk(item.atypeId) &&
             !this.isEquipTypeSealed(item.etypeId)
         );
-    };
+    }
 
     public guardSkillId() {
         return 2;
-    };
+    }
 
     public canAttack() {
         return this.canUse($dataSkills[this.attackSkillId()]);
-    };
+    }
 
     public canGuard() {
         return this.canUse($dataSkills[this.guardSkillId()]);
-    };
+    }
 }
 

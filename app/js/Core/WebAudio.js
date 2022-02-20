@@ -30,6 +30,8 @@ export class WebAudio {
     _loadListeners;
     _stopListeners;
     _decoder;
+    name;
+    frameCount;
     get url() {
         return this._url;
     }
@@ -200,10 +202,10 @@ export class WebAudio {
     isPlaying() {
         return this._isPlaying;
     }
-    play(loop, offset) {
+    play(loop, offset = 0) {
         this._loop = loop;
         if (this.isReady()) {
-            offset = offset || 0;
+            offset = offset;
             this._startPlaying(offset);
         }
         else if (WebAudio._context) {

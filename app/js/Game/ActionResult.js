@@ -21,7 +21,6 @@ export class Game_ActionResult {
     initialize(...args) {
         this.clear();
     }
-    ;
     clear() {
         this.used = false;
         this.missed = false;
@@ -40,15 +39,12 @@ export class Game_ActionResult {
         this.addedDebuffs = [];
         this.removedBuffs = [];
     }
-    ;
     addedStateObjects() {
         return this.addedStates.map(id => $dataStates[id]);
     }
-    ;
     removedStateObjects() {
         return this.removedStates.map(id => $dataStates[id]);
     }
-    ;
     isStatusAffected() {
         return (this.addedStates.length > 0 ||
             this.removedStates.length > 0 ||
@@ -56,59 +52,47 @@ export class Game_ActionResult {
             this.addedDebuffs.length > 0 ||
             this.removedBuffs.length > 0);
     }
-    ;
     isHit() {
         return this.used && !this.missed && !this.evaded;
     }
-    ;
     isStateAdded(stateId) {
         return this.addedStates.includes(stateId);
     }
-    ;
     pushAddedState(stateId) {
         if (!this.isStateAdded(stateId)) {
             this.addedStates.push(stateId);
         }
     }
-    ;
     isStateRemoved(stateId) {
         return this.removedStates.includes(stateId);
     }
-    ;
     pushRemovedState(stateId) {
         if (!this.isStateRemoved(stateId)) {
             this.removedStates.push(stateId);
         }
     }
-    ;
     isBuffAdded(paramId) {
         return this.addedBuffs.includes(paramId);
     }
-    ;
     pushAddedBuff(paramId) {
         if (!this.isBuffAdded(paramId)) {
             this.addedBuffs.push(paramId);
         }
     }
-    ;
     isDebuffAdded(paramId) {
         return this.addedDebuffs.includes(paramId);
     }
-    ;
     pushAddedDebuff(paramId) {
         if (!this.isDebuffAdded(paramId)) {
             this.addedDebuffs.push(paramId);
         }
     }
-    ;
     isBuffRemoved(paramId) {
         return this.removedBuffs.includes(paramId);
     }
-    ;
     pushRemovedBuff(paramId) {
         if (!this.isBuffRemoved(paramId)) {
             this.removedBuffs.push(paramId);
         }
     }
-    ;
 }

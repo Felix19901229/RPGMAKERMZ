@@ -38,6 +38,8 @@ export class WebAudio {
     _loadListeners: Function[];
     _stopListeners: Function[];
     _decoder: any;
+    name: string;
+    frameCount: number;
     /**
      * The url of the audio file.
      *
@@ -293,10 +295,10 @@ export class WebAudio {
      * @param {boolean} loop - Whether the audio data play in a loop.
      * @param {number} offset - The start position to play in seconds.
      */
-    public play(loop, offset) {
+    public play(loop, offset:number=0) {
         this._loop = loop;
         if (this.isReady()) {
-            offset = offset || 0;
+            offset = offset;
             this._startPlaying(offset);
         } else if (WebAudio._context) {
             this.addLoadListener(() => this.play(loop, offset));
