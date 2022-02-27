@@ -82,11 +82,16 @@ export class Scene_Base extends Stage {
     public terminate() {
         //
     };
-
+    
+    /**
+     * 创建窗口
+    */
     public createWindowLayer() {
         this._windowLayer = new WindowLayer();
         this._windowLayer.x = (Graphics.width - Graphics.boxWidth) / 2;
         this._windowLayer.y = (Graphics.height - Graphics.boxHeight) / 2;
+        // this._windowLayer.x = 0;
+        // this._windowLayer.y = 0;
         this.addChild(this._windowLayer);
     };
 
@@ -219,6 +224,12 @@ export class Scene_Base extends Stage {
         return this.buttonAreaTop() + offsetY;
     };
 
+    /**
+     * 创建窗口
+     * @param {number} numLines - 有多少行选项
+     * @param {boolean} selectable - 是否可以滚动
+    */
+    
     public calcWindowHeight(numLines, selectable) {
         if (selectable) {
             return Window_Selectable.prototype.fittingHeight(numLines);

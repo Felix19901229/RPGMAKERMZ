@@ -177,7 +177,7 @@ export class Window extends PIXI.Container {
     }
 
     /**
-    * The openness of the window (0 to 255).
+    * 窗口展开速度
     *
     * @type number
     * @name Window#openness

@@ -5,9 +5,9 @@ import { Scene_Base,Scene_Load,Scene_Map, Scene_Options } from "./index.js";
 
 //-----------------------------------------------------------------------------
 /**
- * Scene_Title
+ * 标题画面
  * 
- * The scene class of the title screen.
+ * 这个类是绘制标题画面
 */
 export class Scene_Title extends Scene_Base {
     _commandWindow: Nullable<Window_Command>;
@@ -23,9 +23,14 @@ export class Scene_Title extends Scene_Base {
         Scene_Base.prototype.initialize.call(this);
     };
 
+    /**
+     * 创建标题画面
+    */
     public create() {
         Scene_Base.prototype.create.call(this);
+        //创建图片背景
         this.createBackground();
+        //创建文字绘图界面
         this.createForeground();
         this.createWindowLayer();
         this.createCommandWindow();
@@ -61,6 +66,9 @@ export class Scene_Title extends Scene_Base {
         }
     };
 
+    /**
+     * 创建标题背景画面
+    */
     public createBackground() {
         this._backSprite1 = new Sprite(
             ImageManager.loadTitle1(window.$dataSystem.title1Name)
@@ -73,11 +81,13 @@ export class Scene_Title extends Scene_Base {
     };
 
     public createForeground() {
+        //创建游戏标题文字层
         this._gameTitleSprite = new Sprite(
             new Bitmap(Graphics.width, Graphics.height)
         );
         this.addChild(this._gameTitleSprite);
         if (window.$dataSystem.optDrawTitle) {
+            //绘制文字
             this.drawGameTitle();
         }
     };
@@ -105,9 +115,14 @@ export class Scene_Title extends Scene_Base {
         this.centerSprite(this._backSprite2);
     };
 
+    /**
+     * 创建命令窗口
+    */
     public createCommandWindow() {
         const background = window.$dataSystem.titleCommandWindow.background;
+        //创建选择框
         const rect = this.commandWindowRect();
+        //创建标题命令
         this._commandWindow = new Window_TitleCommand(rect);
         this._commandWindow.setBackgroundType(background);
         this._commandWindow.setHandler("newGame", this.commandNewGame.bind(this));
@@ -116,9 +131,14 @@ export class Scene_Title extends Scene_Base {
         this.addWindow(this._commandWindow);
     };
 
+    /**
+     * 创建命令窗口
+    */
     public commandWindowRect() {
+        //窗口偏移量X
         const offsetX = window.$dataSystem.titleCommandWindow.offsetX;
-        const offsetY = window.$dataSystem.titleCommandWindow.offsetY;
+        //窗口偏移量Y
+        const offsetY = window.$dataSystem.titleCommandWindow.offsetY;       
         const ww = this.mainCommandWidth();
         const wh = this.calcWindowHeight(3, true);
         const wx = (Graphics.boxWidth - ww) / 2 + offsetX;

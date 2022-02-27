@@ -29,7 +29,7 @@ export class Window_TitleCommand extends Window_Command {
     ;
     processOk() {
         Window_TitleCommand._lastCommandSymbol = this.currentSymbol();
-        Window_Command.prototype.processOk.call(this);
+        super.processOk();
     }
     ;
     selectLast() {

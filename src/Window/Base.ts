@@ -518,7 +518,11 @@ export class Window_Base extends Window {
         this.drawText(unit, x + width - unitWidth, y, unitWidth, "right");
     };
 
-    public setBackgroundType(type) {
+    /**
+     * 设置窗口边框
+     * type 0 窗口 1 暗淡 2 透明
+    */
+    public setBackgroundType(type:) {
         if (type === 0) {
             this.opacity = 255;
         } else {

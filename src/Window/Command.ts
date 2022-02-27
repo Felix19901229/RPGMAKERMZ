@@ -32,6 +32,13 @@ export class Window_Command extends Window_Selectable {
         //
     };
 
+    /**
+     * 添加指令
+     * @param {string} name - 显示文字
+     * @param {string} symbol - 绑定指令
+     * @param {boolean} enabled - 是否可用
+     * @param {string} ext - 携带参数？？？用途未知
+    */
     public addCommand(name, symbol, enabled = true, ext = null) {
         this._list.push({ name: name, symbol: symbol, enabled: enabled, ext: ext });
     };
