@@ -204,10 +204,10 @@ export class Bitmap {
         context.restore();
         this._baseTexture.update();
     }
-    drawText(text, x, y, maxWidth, lineHeight, align) {
+    drawText(text, x, y, maxWidth = 0xffffffff, lineHeight, align) {
         const context = this.context;
         const alpha = context.globalAlpha;
-        maxWidth = maxWidth || 0xffffffff;
+        maxWidth = maxWidth;
         let tx = x;
         let ty = Math.round(y + lineHeight / 2 + this.fontSize * 0.35);
         if (align === "center") {

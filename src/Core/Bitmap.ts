@@ -474,18 +474,18 @@ export class Bitmap {
     /**
      * Draws the outline text to the bitmap.
      *
-     * @param {string} text - The text that will be drawn.
-     * @param {number} x - The x coordinate for the left of the text.
-     * @param {number} y - The y coordinate for the top of the text.
-     * @param {number} maxWidth - The maximum allowed width of the text.
-     * @param {number} lineHeight - The height of the text line.
-     * @param {string} align - The alignment of the text.
-     */public drawText(text, x, y, maxWidth, lineHeight, align?) {
+     * @param {string} text - 文字
+     * @param {number} x - 相对于画面X位置
+     * @param {number} y - 相对于画面Y位置
+     * @param {number} maxWidth - 绘制文本宽度
+     * @param {number} lineHeight - 文本行高
+     * @param {string} align - 文本水平位置 center end left right start，设置后会影响X
+     */public drawText(text, x, y, maxWidth = 0xffffffff, lineHeight, align?:CanvasTextAlign) {
         // [Note] Different browser makes different rendering with
         //   textBaseline == 'top'. So we use 'alphabetic' here.
         const context = this.context;
         const alpha = context.globalAlpha;
-        maxWidth = maxWidth || 0xffffffff;
+        maxWidth = maxWidth;
         let tx = x;
         let ty = Math.round(y + lineHeight / 2 + this.fontSize * 0.35);
         if (align === "center") {

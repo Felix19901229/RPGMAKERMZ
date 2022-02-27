@@ -82,6 +82,9 @@ export class Scene_Title extends Scene_Base {
         }
     };
 
+    /**
+     * 绘制标题文字
+    */
     public drawGameTitle() {
         const x = 20;
         const y = Graphics.height / 4;

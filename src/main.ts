@@ -6,6 +6,13 @@ import "./Core/JsExtensions.js";
 import { Utils } from "./Core/index.js";
 import { PluginManager, SceneManager } from "./Manager/index.js";
 import { Scene_Boot } from "./Scene/index.js";
+import * as Core from "./Core/index.js";
+import * as Game from "./Game/index.js";
+import * as Manager from "./Manager/index.js";
+import * as Sprites from "./Spriteset/index.js";
+import * as _Window from "./Window/index.js";
+import * as Sence from "./Scene/index.js";
+Object.assign(window,Core,Game,Manager,Sprites,_Window,Sence);
 
 const scriptUrls = [
     "js/libs/pako.min.js",
